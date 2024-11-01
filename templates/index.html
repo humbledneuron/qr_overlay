@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Stream</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <img id="qr_code_image" src="" alt="QR Code Stream" style="width: 300px; height: 300px;">
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        // Listen for the 'update_qr_code_image' event from the server
+        socket.on('update_qr_code_image', function(data) {
+            var img = document.getElementById('qr_code_image');
+            img.src = 'data:image/png;base64,' + data.qr_image;
+            console.log("QR Code image updated.");
+        });
+    </script>
+</body>
+</html>

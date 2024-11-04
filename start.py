@@ -15,11 +15,19 @@ def start_app():
 
     def run_flask_server():
         global flask_process
-        flask_process = subprocess.Popen(["python", "server.py"])
+        # for global python
+        # flask_process = subprocess.Popen(["python", "server.py"])
+
+        # for local python
+        flask_process = subprocess.Popen([os.path.join('.venv', 'Scripts', 'python'), "server.py"])
 
     def run_qr_scanner():
         global qr_process
-        qr_process = subprocess.Popen(["python", "qr_scanner.py"])
+        # for global python
+        # qr_process = subprocess.Popen(["python", "qr_scanner.py"])
+
+        # for local python
+        qr_process = subprocess.Popen([os.path.join('.venv', 'Scripts', 'python'), "qr_scanner.py"])
 
     # Start the Flask server in a separate thread
     flask_thread = threading.Thread(target=run_flask_server)

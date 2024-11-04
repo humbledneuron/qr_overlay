@@ -5,29 +5,47 @@ import base64
 from io import BytesIO
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")  # Allow CORS for development
 
-# Serve the webpage
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Handle the event when a QR code is detected
-@socketio.on('qr_code_detected')
+@app.route('/templates/logo.svg')
+def logo():
+    return render_template('logo.svg')
+
+
+@socketio.on('qr_code_scanned')  # Changed from qr_code_detected to match client emission
 def handle_qr_code(data):
-    qr_data = data['qr_data']
+    qr_data = data['data']  # Changed from qr_data to match client data structure
     print(f"[DEBUG] QR Code received: {qr_data}")
 
-    # Generate a QR code image from the received QR code data
-    qr_img = qrcode.make(qr_data)
+    # Generate QR code image
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill_color="black", back_color="white")
 
-    # Convert the image to a base64-encoded string
+    # Convert to base64
     buffered = BytesIO()
     qr_img.save(buffered, format="PNG")
     img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
 
-    # Broadcast the QR code image (base64) to all connected clients
+    # Emit the image to all clients
     socketio.emit('update_qr_code_image', {'qr_image': img_base64})
+
+@socketio.on('step_completed')
+def handle_step_completion(data):
+    step_number = data['step']
+    print(f"[DEBUG] Step {step_number} completed")
+    # Broadcast the step completion to all connected clients
+    socketio.emit('step_completed', {'step': step_number})
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)

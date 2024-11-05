@@ -70,7 +70,7 @@ def start_scanning(root):
             print(f"Scanning error: {e}")
             time.sleep(1)  # Longer delay on error
 
-def create_step1_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
+def create_step1_frame(control_panel, step1_button, step2_button, step3_button):
     global scanned_data
 
     # Create a new frame for step 1
@@ -91,7 +91,7 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
     complete_button = ModernButton(
         step1_frame,
         text="Complete",
-        command=lambda: complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame),
+        command=lambda: complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, complete_button, step2_button, step3_button),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -115,7 +115,7 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
 
     return step1_frame
 
-def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame):
+def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, complete_button, step2_button, step3_button):
     # Get the input data
     date = date_entry.get()
     address = address_entry.get()
@@ -128,9 +128,9 @@ def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_b
         sio.emit('step_completed', {'step': 1, 'data': step1_data})
         step1_frame.pack_forget()  # Hide the step 1 frame
         step1_button.config(state="disabled")
+        complete_button.config(state="disabled")
         step2_button.config(state="normal")
         step3_button.config(state="normal")
-        button_frame.pack(expand=True, fill="both")  # Show the main button frame
     except Exception as e:
         print(f"Error: {str(e)}")
 
@@ -196,7 +196,7 @@ def create_overlay():
     step1_button = ModernButton(
         button_frame,
         text="Step 1",
-        command=lambda: step_clicked(1, step1_button, step2_button, step3_button, button_frame),
+        command=lambda: step_clicked(1, step1_button, step2_button, step3_button),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -221,7 +221,7 @@ def create_overlay():
     step2_button = ModernButton(
         button_frame,
         text="Step 2",
-        command=lambda: step_clicked(2, step1_button, step2_button, step3_button, button_frame),
+        command=lambda: step_clicked(2, step1_button, step2_button, step3_button),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -247,7 +247,7 @@ def create_overlay():
     step3_button = ModernButton(
         button_frame,
         text="Step 3",
-        command=lambda: step_clicked(3, step1_button, step2_button, step3_button, button_frame),
+        command=lambda: step_clicked(3, step1_button, step2_button, step3_button),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -270,9 +270,9 @@ def create_overlay():
     step3_button.pack(fill='x', pady=5)
     step3_button.config(state="disabled")
 
-    def step_clicked(step_number, step1_button, step2_button, step3_button, button_frame):
+    def step_clicked(step_number, step1_button, step2_button, step3_button):
         if step_number == 1:
-            step1_frame = create_step1_frame(main_frame, step1_button, step2_button, step3_button, button_frame)
+            step1_frame = create_step1_frame(main_frame, step1_button, step2_button, step3_button)
             button_frame.pack_forget()  # Hide the main button frame
             step1_frame.pack(expand=True, fill="both")
         else:

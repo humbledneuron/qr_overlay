@@ -15,10 +15,9 @@ def index():
 def logo():
     return render_template('logo.svg')
 
-
-@socketio.on('qr_code_scanned')  # Changed from qr_code_detected to match client emission
+@socketio.on('qr_code_scanned')
 def handle_qr_code(data):
-    qr_data = data['data']  # Changed from qr_data to match client data structure
+    qr_data = data['data']
     print(f"[DEBUG] QR Code received: {qr_data}")
 
     # Generate QR code image
@@ -43,9 +42,10 @@ def handle_qr_code(data):
 @socketio.on('step_completed')
 def handle_step_completion(data):
     step_number = data['step']
-    print(f"[DEBUG] Step {step_number} completed")
+    scanned_data = data['data']
+    print(f"[DEBUG] Step {step_number} completed with data: {scanned_data}")
     # Broadcast the step completion to all connected clients
-    socketio.emit('step_completed', {'step': step_number})
+    socketio.emit('step_completed', {'step': step_number, 'data': scanned_data})
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)

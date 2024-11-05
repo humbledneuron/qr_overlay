@@ -25,16 +25,14 @@ body {
 .container {
     max-width: auto;
     width: 90%;
-    /* margin: 2rem auto; */
-    margin-top: -40px;
+    margin: 10rem auto;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     gap: 2rem;
 }
 
 .header {
-    /* display: flex; */
     position: relative;
     width: 100%;
 }
@@ -43,7 +41,6 @@ body {
     margin: 20px 0 0 50px;
     display: flex;
     color: white;
-    /* background-color: white; */
 }
 
 #textContainer {
@@ -70,24 +67,26 @@ body {
     padding: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     margin: 0.2rem 0;
 }
 
 .steps-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
     margin: 2rem 0;
     padding: 0 1rem;
+    gap: 2rem;
 }
 
 .step {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     position: relative;
     z-index: 1;
+    width: 100%;
 }
 
 .step-indicator {
@@ -132,14 +131,15 @@ body {
 }
 
 .progress-line {
-    height: 3px;
+    width: 3px;
     background: rgba(255, 255, 255, 0.1);
     flex-grow: 1;
-    margin: 0 1rem;
+    margin: 1rem 0;
     position: relative;
-    top: -25px;
+    top: 0;
     z-index: 0;
     transition: all 0.3s ease;
+    height: 100%;
 }
 
 .progress-line.completed {
@@ -151,7 +151,7 @@ body {
     width: 100%;
     max-width: 400px;
     aspect-ratio: 1;
-    margin: 2rem auto;
+    margin: 4rem auto;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     overflow: hidden;
@@ -227,6 +227,8 @@ body {
 @media (max-width: 768px) {
     .container {
         width: 95%;
+        flex-direction: column;
+        align-items: center;
     }
 
     .steps-container {
@@ -297,26 +299,21 @@ body {
         </div>
     </div>
     <div class="container">
-        <div id="textContainer">
-            <h1>QR Code Scanner</h1>
-            <p>Place the overlay over a QR code to begin scanning</p>
-        </div>
-
         <div class="card">
             <div class="steps-container">
                 <div class="step step-1">
                     <div class="step-indicator">1</div>
-                    <div class="step-text">Scan QR</div>
+                    <div class="step-text">Steg 1</div>
                 </div>
                 <div class="progress-line line-1"></div>
                 <div class="step step-2">
                     <div class="step-indicator">2</div>
-                    <div class="step-text">Scan QR</div>
+                    <div class="step-text">Steg 2</div>
                 </div>
                 <div class="progress-line line-2"></div>
                 <div class="step step-3">
                     <div class="step-indicator">3</div>
-                    <div class="step-text">Scan QR</div>
+                    <div class="step-text">Steg 3</div>
                 </div>
             </div>
         </div>

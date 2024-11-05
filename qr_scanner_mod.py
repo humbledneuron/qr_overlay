@@ -139,7 +139,7 @@ def create_overlay():
     for i in range(1, 4):
         ModernButton(
             button_frame,
-            text=f"Step {i}",
+            text=f"Steg {i}",
             command=lambda x=i: step_clicked(x),
             font=('Segoe UI', 10, 'bold'),
             fg='white',

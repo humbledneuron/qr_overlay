@@ -211,6 +211,41 @@ body {
     animation: pulse 1.5s infinite ease-in-out;
 }
 
+.step-data {
+            position: relative;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display:block;
+            animation: fadeIn 0.5s ease-out;
+            
+        }
+
+.step-data p {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: white;
+        }
+
+.step-data b {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+.step.completed .step-data {
+            display: block;
+        }
+
+.step-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+.step-data {
+            flex-grow: 1;
+        }
 @keyframes pulse {
     0%, 100% {
         transform: scale(0.5);
@@ -248,7 +283,7 @@ body {
     .container {
         width: 95%;
         flex-direction: column;
-        align-items: center;
+        align-items: start;
     }
 
     .steps-container {
@@ -341,27 +376,33 @@ body {
         <div class="card steps-card">
             <div class="steps-container">
                 <div class="step step-1">
-                    <div class="step-indicator">1</div>
+                    <div class="step-content">
+                        <div class="step-indicator">1</div>
+                        <div class="step-data">
+                            <b>Date:</b> <p id="step1-date"></p>
+                            <b>Address:</b><p id="step1-address"></p>
+                        </div>
+                    </div>
                     <div class="step-text">Steg 1</div>
-                    <span class="step-data">
-                        <b>Date:</b> <p id="step1-date"></p>
-                        <b>Address:</b><p id="step1-address"></p>
-                    </span>
                 </div>
                 <div class="progress-line line-1"></div>
                 <div class="step step-2">
-                    <div class="step-indicator">2</div>
+                    <div class="step-content">
+                        <div class="step-indicator">2</div>
+                        <div class="step-data">
+                            <b>Owner:</b> <p id="step2-owner"></p>
+                            <b>Renter:</b> <p id="step2-renter"></p>
+                        </div>
+                    </div>
                     <div class="step-text">Steg 2</div>
-                    <span class="step-data">
-                        <b>Owner:</b> <p id="step2-owner"></p>
-                        <b>Renter:</b> <p id="step2-renter"></p>
-                    </span>
                 </div>
                 <div class="progress-line line-2"></div>
                 <div class="step step-3">
-                    <div class="step-indicator">3</div>
+                    <div class="step-content">
+                        <div class="step-indicator">3</div>
+                        <div class="step-data"></div>
+                    </div>
                     <div class="step-text">Steg 3</div>
-                    <div class="step-data"></div>
                 </div>
             </div>
         </div>

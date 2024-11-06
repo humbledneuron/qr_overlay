@@ -279,19 +279,39 @@ body {
             });
             
             socket.on('step_completed', function(data) {
-                updateStepUI(data.step);
+                updateStepUI(data.step, data.data);
             });
 
-            function updateStepUI(completedStep) {
+            function updateStepUI(completedStep, stepData) {
                 for (let i = 1; i <= completedStep; i++) {
                     const step = document.querySelector(`.step-${i}`);
                     const line = document.querySelector(`.line-${i}`);
                     
                     if (step) {
                         step.classList.add('completed');
+                        updateStepData(i, stepData);
                     }
                     if (line) {
                         line.classList.add('completed');
+                    }
+                }
+            }
+
+            function updateStepData(stepNumber, stepData) {
+                const stepDataElement = document.querySelector(`.step-${stepNumber} .step-data`);
+                if (stepDataElement) {
+                    switch (stepNumber) {
+                        case 1:
+                            document.getElementById('step1-date').textContent = stepData.date;
+                            document.getElementById('step1-address').textContent = stepData.address;
+                            break;
+                        case 2:
+                            document.getElementById('step2-owner').textContent = stepData.owner;
+                            document.getElementById('step2-renter').textContent = stepData.renter;
+                            break;
+                        case 3:
+                            // Add logic to display data for step 3 if needed
+                            break;
                     }
                 }
             }
@@ -314,7 +334,6 @@ body {
 <body>
     <div class="header">
         <div class="logo">
-            <!-- <img src="https://oneflow.com/app/uploads/2021/03/logo.svg" alt="Logo"> -->
             <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Logo" style="animation: flash 1.5s infinite;">
         </div>
     </div>
@@ -324,16 +343,25 @@ body {
                 <div class="step step-1">
                     <div class="step-indicator">1</div>
                     <div class="step-text">Steg 1</div>
+                    <span class="step-data">
+                        <b>Date:</b> <p id="step1-date"></p>
+                        <b>Address:</b><p id="step1-address"></p>
+                    </span>
                 </div>
-                <!-- <div class="progress-line line-1"></div> -->
+                <div class="progress-line line-1"></div>
                 <div class="step step-2">
                     <div class="step-indicator">2</div>
                     <div class="step-text">Steg 2</div>
+                    <span class="step-data">
+                        <b>Owner:</b> <p id="step2-owner"></p>
+                        <b>Renter:</b> <p id="step2-renter"></p>
+                    </span>
                 </div>
-                <!-- <div class="progress-line line-2"></div> -->
+                <div class="progress-line line-2"></div>
                 <div class="step step-3">
                     <div class="step-indicator">3</div>
                     <div class="step-text">Steg 3</div>
+                    <div class="step-data"></div>
                 </div>
             </div>
         </div>

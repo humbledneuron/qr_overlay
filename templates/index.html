@@ -246,6 +246,22 @@ body {
 .step-data {
             flex-grow: 1;
         }
+
+.step-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.step-data-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-data-item b {
+    min-width: 60px; /* Adjust as needed to align labels */
+}
 @keyframes pulse {
     0%, 100% {
         transform: scale(0.5);
@@ -386,8 +402,12 @@ body {
                     <div class="step-content">
                         <div class="step-indicator">1</div>
                         <div class="step-data">
-                            <b>Date:</b> <p id="step1-date"></p>
-                            <b>Address:</b><p id="step1-address"></p>
+                            <div class="step-data-item">
+                                <b>Date:</b> <p id="step1-date"></p>
+                            </div>
+                            <div class="step-data-item">
+                                <b>Address:</b> <p id="step1-address"></p>
+                            </div>
                         </div>
                     </div>
                     <div class="step-text">Steg 1</div>
@@ -397,8 +417,12 @@ body {
                     <div class="step-content">
                         <div class="step-indicator">2</div>
                         <div class="step-data">
-                            <b>Owner:</b> <p id="step2-owner"></p>
-                            <b>Renter:</b> <p id="step2-renter"></p>
+                            <div class="step-data-item">
+                                <b>Owner:</b> <p id="step2-owner"></p>
+                            </div>
+                            <div class="step-data-item">
+                                <b>Renter:</b> <p id="step2-renter"></p>
+                            </div>
                         </div>
                     </div>
                     <div class="step-text">Steg 2</div>

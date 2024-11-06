@@ -307,6 +307,10 @@ body {
             
             loadingElement.classList.add('active');
             
+            let step1Data = {};
+            let step2Data = {};
+            let step3Data = {};
+
             socket.on('update_qr_code_image', function(data) {
                 qrImage.src = 'data:image/png;base64,' + data.qr_image;
                 loadingElement.classList.remove('active');
@@ -324,7 +328,9 @@ body {
                     
                     if (step) {
                         step.classList.add('completed');
-                        updateStepData(i, stepData);
+                        if (i === completedStep) {
+                            updateStepData(i, stepData);
+                        }
                     }
                     if (line) {
                         line.classList.add('completed');
@@ -333,21 +339,21 @@ body {
             }
 
             function updateStepData(stepNumber, stepData) {
-                const stepDataElement = document.querySelector(`.step-${stepNumber} .step-data`);
-                if (stepDataElement) {
-                    switch (stepNumber) {
-                        case 1:
-                            document.getElementById('step1-date').textContent = stepData.date;
-                            document.getElementById('step1-address').textContent = stepData.address;
-                            break;
-                        case 2:
-                            document.getElementById('step2-owner').textContent = stepData.owner;
-                            document.getElementById('step2-renter').textContent = stepData.renter;
-                            break;
-                        case 3:
-                            // Add logic to display data for step 3 if needed
-                            break;
-                    }
+                switch (stepNumber) {
+                    case 1:
+                        step1Data = stepData;
+                        document.getElementById('step1-date').textContent = stepData.date;
+                        document.getElementById('step1-address').textContent = stepData.address;
+                        break;
+                    case 2:
+                        step2Data = stepData;
+                        document.getElementById('step2-owner').textContent = stepData.owner;
+                        document.getElementById('step2-renter').textContent = stepData.renter;
+                        break;
+                    case 3:
+                        step3Data = stepData;
+                        // Add logic to display data for step 3 if needed
+                        break;
                 }
             }
             
@@ -364,6 +370,7 @@ body {
                 }
             }, 1000);
         });
+
     </script>
 </head>
 <body>

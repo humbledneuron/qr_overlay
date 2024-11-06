@@ -48,4 +48,4 @@ def handle_step_completion(data):
     socketio.emit('step_completed', {'step': step_number, 'data': scanned_data})
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

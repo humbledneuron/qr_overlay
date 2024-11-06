@@ -330,10 +330,11 @@ def create_overlay():
     root.bind("<Configure>", align_windows)
 
     try:
-        sio.connect('http://127.0.0.1:5000')
+        sio.connect('https://oneflow-qr.onrender.com')
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")
+        print(f"Server connection error: {e}")
 
     scan_thread = Thread(target=start_scanning, args=(root,))
     scan_thread.daemon = True

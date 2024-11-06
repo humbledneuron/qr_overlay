@@ -183,14 +183,14 @@ def create_overlay():
     stop_scanning = False
     
     root = tk.Tk()
-    root.geometry("400x500")
+    root.geometry("400x400")
     root.title("QR Scanner")
     root.configure(bg="#4B0082")
     root.attributes("-alpha", 0.3)
     root.attributes("-topmost", True)
 
     control_panel = tk.Toplevel(root)
-    control_panel.geometry("400x300")
+    control_panel.geometry("400x400")
     control_panel.title("Scanner Controls")
     control_panel.configure(bg="#F3F4F6")
     control_panel.attributes("-topmost", True)

@@ -28,9 +28,7 @@ class ModernButton(tk.Button):
         self['background'] = '#8B5CF6'
 
 def scan_for_qr_codes(frame):
-    # Convert frame to grayscale
     gray = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2GRAY)
-    # Decode QR codes
     qr_codes = pyzbar.decode(gray)
     return qr_codes
 
@@ -39,45 +37,35 @@ def start_scanning(root):
     
     while not stop_scanning:
         try:
-            # Get the window position
             x = root.winfo_x()
             y = root.winfo_y()
             width = root.winfo_width()
             height = root.winfo_height()
             
-            # Capture the screen area within the window
             screenshot = ImageGrab.grab(bbox=(x, y, x + width, y + height))
-            
-            # Scan for QR codes
             qr_codes = scan_for_qr_codes(screenshot)
             
-            # Process found QR codes
             for qr_code in qr_codes:
                 data = qr_code.data.decode('utf-8')
                 print(f"QR Code detected: {data}")
-                # Store the scanned data
                 scanned_data = {'data': data}
-                # Emit the data through socket
                 try:
                     sio.emit('qr_code_scanned', scanned_data)
                 except Exception as e:
                     print(f"Socket emission error: {e}")
             
-            # Add a small delay to prevent high CPU usage
             time.sleep(0.1)
             
         except Exception as e:
             print(f"Scanning error: {e}")
-            time.sleep(1)  # Longer delay on error
+            time.sleep(1)
 
 def create_step1_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
     global scanned_data
 
-    # Create a new frame for step 1
     step1_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step1_frame.pack(expand=True, fill="both")
 
-    # Add "Enter" and "Complete" buttons
     date_label = ttk.Label(step1_frame, text="Date:", style="Subtitle.TLabel")
     date_label.pack(fill='x', pady=5)
     date_entry = ttk.Entry(step1_frame)
@@ -115,22 +103,78 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
 
     return step1_frame
 
+def create_step2_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
+    global scanned_data
+
+    step2_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
+    step2_frame.pack(expand=True, fill="both")
+
+    owner_label = ttk.Label(step2_frame, text="Owner:", style="Subtitle.TLabel")
+    owner_label.pack(fill='x', pady=5)
+    owner_entry = ttk.Entry(step2_frame)
+    owner_entry.pack(fill='x', pady=5)
+
+    renter_label = ttk.Label(step2_frame, text="Renter:", style="Subtitle.TLabel")
+    renter_label.pack(fill='x', pady=5)
+    renter_entry = ttk.Entry(step2_frame)
+    renter_entry.pack(fill='x', pady=5)
+
+    complete_button = ModernButton(
+        step2_frame,
+        text="Complete",
+        command=lambda: complete_step2(step2_frame, owner_entry, renter_entry, scanned_data, step1_button, step2_button, step3_button, button_frame),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        bd=0,
+        highlightthickness=1,
+        padx=10,
+        pady=5,
+        highlightbackground="#8B5CF6",
+        highlightcolor="#8B5CF6",
+        borderwidth=0,
+        width=10,
+        height=1,
+        compound='left',
+        anchor='center'
+    )
+    complete_button.pack(fill='x', pady=5)
+
+    return step2_frame
+
 def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame):
-    # Get the input data
     date = date_entry.get()
     address = address_entry.get()
-    
-    # Combine the scanned data and user input
     step1_data = {**scanned_data, 'date': date, 'address': address}
     
     try:
         print(f"[DEBUG] Step 1 completed with data: {step1_data}")
         sio.emit('step_completed', {'step': 1, 'data': step1_data})
-        step1_frame.pack_forget()  # Hide the step 1 frame
+        step1_frame.pack_forget()
         step1_button.config(state="disabled")
         step2_button.config(state="normal")
+        step3_button.config(state="disabled")
+        button_frame.pack(expand=True, fill="both")
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+def complete_step2(step2_frame, owner_entry, renter_entry, scanned_data, step1_button, step2_button, step3_button, button_frame):
+    owner = owner_entry.get()
+    renter = renter_entry.get()
+    step2_data = {**scanned_data, 'owner': owner, 'renter': renter}
+    
+    try:
+        print(f"[DEBUG] Step 2 completed with data: {step2_data}")
+        sio.emit('step_completed', {'step': 2, 'data': step2_data})
+        step2_frame.pack_forget()
+        step1_button.config(state="disabled")
+        step2_button.config(state="disabled")
         step3_button.config(state="normal")
-        button_frame.pack(expand=True, fill="both")  # Show the main button frame
+        button_frame.pack(expand=True, fill="both")
     except Exception as e:
         print(f"Error: {str(e)}")
 
@@ -138,24 +182,19 @@ def create_overlay():
     global stop_scanning
     stop_scanning = False
     
-    # Create main window
     root = tk.Tk()
     root.geometry("400x500")
     root.title("QR Scanner")
-    
-    # Configure the main window style
-    root.configure(bg="#4B0082")  # Deep purple background
-    root.attributes("-alpha", 0.3)  # Changed from wm_attributes
+    root.configure(bg="#4B0082")
+    root.attributes("-alpha", 0.3)
     root.attributes("-topmost", True)
 
-    # Create control panel window
     control_panel = tk.Toplevel(root)
     control_panel.geometry("400x300")
     control_panel.title("Scanner Controls")
     control_panel.configure(bg="#F3F4F6")
     control_panel.attributes("-topmost", True)
 
-    # Style configuration
     style = ttk.Style()
     style.configure("Modern.TFrame", background="#F3F4F6")
     style.configure("Title.TLabel", 
@@ -167,11 +206,9 @@ def create_overlay():
                    foreground="#4B5563",
                    font=('Segoe UI', 10))
 
-    # Main frame
     main_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     main_frame.pack(expand=True, fill="both")
 
-    # Title and instructions
     title = ttk.Label(main_frame, 
                      text="QR Code Scanner",
                      style="Title.TLabel")
@@ -182,14 +219,12 @@ def create_overlay():
                         style="Subtitle.TLabel")
     subtitle.pack(pady=(0, 20))
 
-    # Status label to show scanning results
     status_var = tk.StringVar(value="Scanner Active")
     status_label = ttk.Label(main_frame,
                             textvariable=status_var,
                             style="Subtitle.TLabel")
     status_label.pack(pady=(0, 10))
 
-    # Button frame
     button_frame = ttk.Frame(main_frame, style="Modern.TFrame")
     button_frame.pack(expand=True, fill="both")
 
@@ -273,8 +308,12 @@ def create_overlay():
     def step_clicked(step_number, step1_button, step2_button, step3_button, button_frame):
         if step_number == 1:
             step1_frame = create_step1_frame(main_frame, step1_button, step2_button, step3_button, button_frame)
-            button_frame.pack_forget()  # Hide the main button frame
+            button_frame.pack_forget()
             step1_frame.pack(expand=True, fill="both")
+        elif step_number == 2:
+            step2_frame = create_step2_frame(main_frame, step1_button, step2_button, step3_button, button_frame)
+            button_frame.pack_forget()
+            step2_frame.pack(expand=True, fill="both")
         else:
             try:
                 print(f"[DEBUG] Step {step_number} completed")
@@ -283,7 +322,6 @@ def create_overlay():
             except Exception as e:
                 status_var.set(f"Error: {str(e)}")
 
-    # Keep windows aligned
     def align_windows(event=None):
         x = root.winfo_x()
         y = root.winfo_y() + root.winfo_height()
@@ -291,14 +329,12 @@ def create_overlay():
     
     root.bind("<Configure>", align_windows)
 
-    # Initialize SocketIO connection
     try:
-        sio.connect('http://127.0.0.1:5000')  # Replace with your server URL
+        sio.connect('http://127.0.0.1:5000')
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")
 
-    # Start scanning in a separate thread
     scan_thread = Thread(target=start_scanning, args=(root,))
     scan_thread.daemon = True
     scan_thread.start()

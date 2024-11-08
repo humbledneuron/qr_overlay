@@ -30,6 +30,9 @@ class ModernButton(tk.Button):
 def scan_for_qr_codes(frame):
     gray = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2GRAY)
     qr_codes = pyzbar.decode(gray)
+
+    # print(f"QR Codes detected: {len(qr_codes)}")
+    # print(f"QR Codes detected: {qr_codes}")
     return qr_codes
 
 def start_scanning(root):
@@ -114,10 +117,35 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
     owner_entry = ttk.Entry(step2_frame)
     owner_entry.pack(fill='x', pady=5)
 
+    owner_sign_frame = ttk.Frame(step2_frame, style="Modern.TFrame")
+    owner_sign_frame.pack(fill='x', pady=5)
+    owner_sign_label = ttk.Label(owner_sign_frame, text="Signed in?", style="Subtitle.TLabel")
+    owner_sign_label.pack(side='left', padx=5)
+    owner_sign_var = tk.StringVar(value="No")
+    owner_sign_yes = ttk.Radiobutton(owner_sign_frame, text="Yes", variable=owner_sign_var, value="Yes", style="Modern.TRadiobutton")
+    owner_sign_yes.pack(side='left', padx=5)
+    owner_sign_no = ttk.Radiobutton(owner_sign_frame, text="No", variable=owner_sign_var, value="No", style="Modern.TRadiobutton")
+    owner_sign_no.pack(side='left', padx=5)
+
     renter_label = ttk.Label(step2_frame, text="Renter:", style="Subtitle.TLabel")
     renter_label.pack(fill='x', pady=5)
     renter_entry = ttk.Entry(step2_frame)
     renter_entry.pack(fill='x', pady=5)
+
+    renter_sign_frame = ttk.Frame(step2_frame, style="Modern.TFrame")
+    renter_sign_frame.pack(fill='x', pady=5)
+    renter_sign_label = ttk.Label(renter_sign_frame, text="Signed in?", style="Subtitle.TLabel")
+    renter_sign_label.pack(side='left', padx=5)
+    renter_sign_var = tk.StringVar(value="No")
+    renter_sign_yes = ttk.Radiobutton(renter_sign_frame, text="Yes", variable=renter_sign_var, value="Yes", style="Modern.TRadiobutton")
+    renter_sign_yes.pack(side='left', padx=5)
+    renter_sign_no = ttk.Radiobutton(renter_sign_frame, text="No", variable=renter_sign_var, value="No", style="Modern.TRadiobutton")
+    renter_sign_no.pack(side='left', padx=5)
+
+    personal_code_label = ttk.Label(step2_frame, text="Personal code:", style="Subtitle.TLabel")
+    personal_code_label.pack(fill='x', pady=5)
+    personal_code_entry = ttk.Entry(step2_frame)
+    personal_code_entry.pack(fill='x', pady=5)
 
     complete_button = ModernButton(
         step2_frame,
@@ -330,7 +358,7 @@ def create_overlay():
     root.bind("<Configure>", align_windows)
 
     try:
-        sio.connect('https://oneflow-qr.onrender.com')
+        sio.connect('http://127.0.0.1:5000')
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")

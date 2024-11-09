@@ -79,10 +79,13 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
     address_entry = ttk.Entry(step1_frame)
     address_entry.pack(fill='x', pady=5)
 
+    validation_label = ttk.Label(step1_frame, text="", style="Subtitle.TLabel")
+    validation_label.pack(fill='x', pady=5)
+
     complete_button = ModernButton(
         step1_frame,
         text="Complete",
-        command=lambda: complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame),
+        command=lambda: complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -228,9 +231,15 @@ def create_step3_frame(control_panel, step1_button, step2_button, step3_button, 
 
     return step3_frame
 
-def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame):
+def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label):
     date = date_entry.get()
     address = address_entry.get()
+    
+    # Validation checks
+    if not date or not address:
+        validation_label.config(text="Please fill in all required fields.", foreground="red")
+        return
+    
     step1_data = {**scanned_data, 'date': date, 'address': address}
     
     try:
@@ -253,7 +262,7 @@ def complete_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, 
     
     # Validation checks
     if not owner or not renter or not owner_sign or not renter_sign or not personal_code:
-        validation_label.config(text="Please fill in all required fields.", fg="red")
+        validation_label.config(text="Please fill in all required fields.", foreground="red")
         return
     
     step2_data = {

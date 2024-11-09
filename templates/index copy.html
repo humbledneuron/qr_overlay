@@ -46,16 +46,16 @@ body {
 
 #textContainer {
     text-align: center;
-    /* margin: 1rem 0 0 0; */
+    margin: 1rem 0 0 0;
     animation: fadeIn 1s ease-out;
 }
 
 #textContainer h1 {
     font-size: 2.2rem;
-    /* margin-bottom: 0.4rem; */
+    margin-bottom: 0.4rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     color: black;
-    font-size:48px;
+    font-size:56px;
     font-family: "Sweden Sans";
 }
 
@@ -84,7 +84,7 @@ body {
 }
 
 .qr-card{
-    margin-right: 10vw;
+    margin-right: 15vw;
 }
 
 .steps-container {
@@ -373,39 +373,11 @@ body {
                     case 2:
                         step2Data = stepData;
                         document.getElementById('step2-owner').textContent = stepData.owner;
-
-                        if (stepData.owner_sign == "Yes"){
-                            document.getElementById('step2-owner-sign').textContent = "underskrift klar";
-                        } 
-                        else if(stepData.owner_sign == "No"){
-                            document.getElementById('step2-owner-sign').textContent = "signatur ikke klar";
-                        }
-                        else {
-                            document.getElementById('step2-owner-sign').textContent = "Väntar på underskrift";
-                        }
-                        // document.getElementById('step2-owner-sign').textContent = stepData.owner_sign;
-
                         document.getElementById('step2-renter').textContent = stepData.renter;
-
-                        if (stepData.renter_sign == "Yes"){
-                            document.getElementById('step2-renter-sign').textContent = "underskrift klar";
-                        } 
-                        else if(stepData.owner_sign == "No"){
-                            document.getElementById('step2-owner-sign').textContent = "signatur ikke klar";
-                        }
-                        else {
-                            document.getElementById('step2-renter-sign').textContent = "Väntar på underskrift";
-                        }
-                        // document.getElementById('step2-renter-sign').textContent = stepData.renter_sign;
-                        document.getElementById('step2-personal-code').textContent = stepData.personal_code;
                         break;
                     case 3:
                         step3Data = stepData;
                         // Add logic to display data for step 3 if needed
-                        document.getElementById('step3-owner').textContent = stepData.owner;
-                        document.getElementById('step3-renter').textContent = stepData.renter;
-                        document.getElementById('step3-code').textContent = stepData.code;
-                        
                         break;
                 }
             }
@@ -464,41 +436,39 @@ body {
                             <div class="step-data-item">
                                 <h3>Påbörja underskrift</h3> 
                             </div>
-                            <p>Detta kontrakt har påbörjats för underskrift för lägenheten</p>
+                                <p>Detta kontrakt har påbörjats för underskrift för lägenheten</p>
                             <div class="step-data-item">
                                 <b>hyresvärd:</b> <p id="step2-owner"></p>
                             </div>
                             <div class="step-data-item">
-                                <!-- <b>Underskrift:</b>  -->
-                                <p id="step2-owner-sign">Väntar på underskrift</p>
+                               (for owner) Väntar på underskrift  <!-- <b>Waiting for signatures</b> if the "signed in" btn is clicked from the QR side it should show "Signing is done = underskrift klar" else the text in div should be show, it should wait till the confirmation is done -->
                             </div>
                             <div class="step-data-item">
                                 <b>Hyresgäst/överföringsmottagare:</b> <p id="step2-renter"></p>
                             </div>
                             <div class="step-data-item">
-                                <!-- <b>Underskrift:</b>  -->
-                                <p id="step2-renter-sign">Väntar på underskrift</p>
+                                (for renter) Väntar på underskrift  <!-- <b>Waiting for signatures</b> if the "signed in" btn is clicked from the QR side it should show "Signing is done = underskrift klar" else the text in div should be show, it should wait till the confirmation is done -->
                             </div>
+
                             <div class="step-data-item">
-                                <b>Konto/personligkod:</b> <p id="step2-personal-code"></p>
+                                <h3>(Account/personal code:) Konto/personligkod:</h3>
                             </div>
                         </div>
                     </div>
                     <div class="step-text">Steg 2</div>
                 </div>
-
                 <div class="step step-3">
                     <div class="step-content">
                         <div class="step-indicator">3</div>
                         <div class="step-data">
                             <div class="step-data-item">
-                                <b>Jag godkänner följande överföringar av person</b> <p></p>
+                                <b>Jag godkänner följande överföringar av person</b> <p></p>
                             </div>
                             <div class="step-data-item">
-                                <b> <span style="color: gray;" id="step3-owner">(Owner_Name)</span>  till  <span  style="color: gray;" id="step3-renter">(Renter_name) </p></b>
+                                <b>(Owner_Name) <p id="step2-owner"></p>  "till"(to)  (Renter_name) <p id="step2-renter"></p></b> <p></p>
                             </div> 
                             <div class="step-data-item">
-                                <b>kod/totalsumma:</b> <p id="step3-code"></p>
+                                <b>(Code:) kod/totalsumma:</b> <p></p>
                             </div>
                         </div>
                     </div>

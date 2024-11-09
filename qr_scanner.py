@@ -69,22 +69,25 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
     step1_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step1_frame.pack(expand=True, fill="both")
 
+    step_1_label = ttk.Label(step1_frame, text="Step 1", style="Subtitle.TLabel", font=('Segoe UI', 12, 'bold'))
+    step_1_label.pack(side='top', pady=5)
+
     date_label = ttk.Label(step1_frame, text="Date:", style="Subtitle.TLabel")
-    date_label.pack(fill='x', pady=5)
+    date_label.pack(fill='x', pady=2)
     date_entry = ttk.Entry(step1_frame)
-    date_entry.pack(fill='x', pady=5)
+    date_entry.pack(fill='x', pady=2)
 
     address_label = ttk.Label(step1_frame, text="Address:", style="Subtitle.TLabel")
-    address_label.pack(fill='x', pady=5)
+    address_label.pack(fill='x', pady=2)
     address_entry = ttk.Entry(step1_frame)
-    address_entry.pack(fill='x', pady=5)
+    address_entry.pack(fill='x', pady=2)
 
     validation_label = ttk.Label(step1_frame, text="", style="Subtitle.TLabel")
-    validation_label.pack(fill='x', pady=5)
+    validation_label.pack(fill='x', pady=2)
 
     # Navigation buttons frame
     nav_frame = ttk.Frame(step1_frame, style="Modern.TFrame")
-    nav_frame.pack(fill='x', pady=10)
+    nav_frame.pack(fill='x', pady=4)
 
     back_button = ModernButton(
         nav_frame,
@@ -124,6 +127,9 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
 
     step2_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step2_frame.pack(expand=True, fill="both")
+
+    step_2_label = ttk.Label(step2_frame, text="Step 2", style="Subtitle.TLabel", font=('Segoe UI', 12, 'bold'))
+    step_2_label.pack(side='top', pady=5)
 
     owner_label = ttk.Label(step2_frame, text="Owner:", style="Subtitle.TLabel")
     owner_label.pack(fill='x', pady=5)
@@ -285,6 +291,16 @@ def validate_and_show_completion(signing_frame, owner_entry, renter_entry, perso
         validation_label.config(text="Please select signing status for both owner and renter")
         return
 
+    # Store the data in global scanned_data
+    global scanned_data
+    scanned_data.update({
+        'owner': owner_entry.get(),
+        'renter': renter_entry.get(),
+        'personal_code': personal_code_entry.get(),
+        'owner_sign': owner_sign_var.get(),
+        'renter_sign': renter_sign_var.get()
+    })
+
     # Show completion page
     show_completion_page(
         signing_frame,
@@ -300,29 +316,41 @@ def validate_and_show_completion(signing_frame, owner_entry, renter_entry, perso
         button_frame,
         2
     )
+
 def create_step3_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
     global scanned_data
 
     step3_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step3_frame.pack(expand=True, fill="both")
 
+    step_3_label = ttk.Label(step3_frame, text="Step 3", style="Subtitle.TLabel", font=('Segoe UI', 12, 'bold'))
+    step_3_label.pack(side='top', pady=5)
+
     owner_label = ttk.Label(step3_frame, text="Owner:", style="Subtitle.TLabel")
-    owner_label.pack(fill='x', pady=5)
+    owner_label.pack(fill='x', pady=2)
     owner_entry = ttk.Entry(step3_frame)
-    owner_entry.pack(fill='x', pady=5)
+    owner_entry.pack(fill='x', pady=2)
+    # Pre-fill owner data if available
+    if 'owner' in scanned_data:
+        owner_entry.insert(0, scanned_data['owner'])
+        owner_entry.config(state='readonly')  # Make it read-only
 
     renter_label = ttk.Label(step3_frame, text="Renter:", style="Subtitle.TLabel")
-    renter_label.pack(fill='x', pady=5)
+    renter_label.pack(fill='x', pady=2)
     renter_entry = ttk.Entry(step3_frame)
-    renter_entry.pack(fill='x', pady=5)
+    renter_entry.pack(fill='x', pady=2)
+    # Pre-fill renter data if available
+    if 'renter' in scanned_data:
+        renter_entry.insert(0, scanned_data['renter'])
+        renter_entry.config(state='readonly')  # Make it read-only
 
     code_label = ttk.Label(step3_frame, text="Code:", style="Subtitle.TLabel")
-    code_label.pack(fill='x', pady=5)
+    code_label.pack(fill='x', pady=2)
     code_entry = ttk.Entry(step3_frame)
-    code_entry.pack(fill='x', pady=5)
+    code_entry.pack(fill='x', pady=2)
 
     validation_label = ttk.Label(step3_frame, text="", style="Subtitle.TLabel")
-    validation_label.pack(fill='x', pady=5)
+    validation_label.pack(fill='x', pady=2)
 
     # Navigation buttons frame
     nav_frame = ttk.Frame(step3_frame, style="Modern.TFrame")
@@ -455,7 +483,7 @@ def show_completion_page(previous_frame, *args):
     step_frame.pack(expand=True, fill="both")
 
     title_label = ttk.Label(step_frame, text="Complete Step", style="Title.TLabel")
-    title_label.pack(pady=20)
+    title_label.pack(pady=5)
 
     # Create validation label
     validation_label = ttk.Label(step_frame, text="", style="Subtitle.TLabel", foreground="red")
@@ -705,14 +733,14 @@ def create_overlay():
     stop_scanning = False
     
     root = tk.Tk()
-    root.geometry("400x400")
+    root.geometry("400x300")
     root.title("QR Scanner")
     root.configure(bg="#4B0082")
     root.attributes("-alpha", 0.3)
     root.attributes("-topmost", True)
 
     control_panel = tk.Toplevel(root)
-    control_panel.geometry("400x400")
+    control_panel.geometry("400x500")
     control_panel.title("Scanner Controls")
     control_panel.configure(bg="#F3F4F6")
     control_panel.attributes("-topmost", True)
@@ -745,7 +773,7 @@ def create_overlay():
     status_label = ttk.Label(main_frame,
                             textvariable=status_var,
                             style="Subtitle.TLabel")
-    status_label.pack(pady=(0, 10))
+    status_label.pack(pady=(0, 0))
 
     button_frame = ttk.Frame(main_frame, style="Modern.TFrame")
     button_frame.pack(expand=True, fill="both")

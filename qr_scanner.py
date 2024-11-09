@@ -292,7 +292,7 @@ def complete_step3(step3_frame, owner_entry, renter_entry, code_entry, scanned_d
     
     # Validation checks
     if not owner or not renter or not code:
-        validation_label.config(text="Please fill in all required fields.", fg="red")
+        validation_label.config(text="Please fill in all required fields.", foreground="red")
         return
     
     step3_data = {

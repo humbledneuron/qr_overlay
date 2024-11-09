@@ -84,7 +84,7 @@ body {
 }
 
 .qr-card{
-    margin-right: 15vw;
+    margin-right: 10vw;
 }
 
 .steps-container {
@@ -402,6 +402,10 @@ body {
                     case 3:
                         step3Data = stepData;
                         // Add logic to display data for step 3 if needed
+                        document.getElementById('step3-owner').textContent = stepData.renter;
+                        document.getElementById('step3-renter').textContent = stepData.renter;
+                        document.getElementById('step3-code').textContent = stepData.renter;
+                        
                         break;
                 }
             }

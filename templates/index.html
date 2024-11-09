@@ -402,7 +402,7 @@ body {
                     case 3:
                         step3Data = stepData;
                         // Add logic to display data for step 3 if needed
-                        document.getElementById('step3-owner').textContent = stepData.renter;
+                        document.getElementById('step3-owner').textContent = stepData.owner;
                         document.getElementById('step3-renter').textContent = stepData.renter;
                         document.getElementById('step3-code').textContent = stepData.renter;
                         
@@ -495,10 +495,10 @@ body {
                                 <b>Jag godkänner följande överföringar av person</b> <p></p>
                             </div>
                             <div class="step-data-item">
-                                <b>(Owner_Name) <p id="step3-owner"></p>  "till"(to)  (Renter_name) <p id="step3-renter"></p></b> <p></p>
+                                <b>(Owner_Name) <span style="color: gray;" id="step3-owner"></span>  "till"(to)  (Renter_name) <span  style="color: gray;" id="step3-renter"></p></b>
                             </div> 
                             <div class="step-data-item">
-                                <b>(Code:) kod/totalsumma:</b> <p></p>
+                                <b>(Code:) kod/totalsumma:</b> <p id="step3-code"></p>
                             </div>
                         </div>
                     </div>

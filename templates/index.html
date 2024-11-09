@@ -26,7 +26,7 @@ body {
 .container {
     max-width: auto;
     width: 90%;
-    margin: 10rem auto;
+    margin: 1.5rem auto;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -52,8 +52,11 @@ body {
 
 #textContainer h1 {
     font-size: 2.2rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: black;
+    font-size:56px;
+    font-family: "Sweden Sans";
 }
 
 #textContainer p {
@@ -104,24 +107,25 @@ body {
 }
 
 .step-indicator {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    /* background: rgba(255, 255, 255, 0.2); */
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 1.5rem;
-    color: white;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    color: black;
+    border: 3px solid rgb(180, 94, 94);
     transition: all 0.3s ease;
 }
 
 .step.completed .step-indicator {
     background: #4CAF50;
     border-color: #45a049;
-    transform: scale(1.1);
+    transform: scale(1.0);
     color: white;
 }
 
@@ -369,7 +373,31 @@ body {
                     case 2:
                         step2Data = stepData;
                         document.getElementById('step2-owner').textContent = stepData.owner;
+
+                        if (stepData.owner_sign == "Yes"){
+                            document.getElementById('step2-owner-sign').textContent = "underskrift klar";
+                        } 
+                        else if(stepData.owner_sign == "No"){
+                            document.getElementById('step2-owner-sign').textContent = "signatur ikke klar";
+                        }
+                        else {
+                            document.getElementById('step2-owner-sign').textContent = "Väntar på underskrift";
+                        }
+                        // document.getElementById('step2-owner-sign').textContent = stepData.owner_sign;
+
                         document.getElementById('step2-renter').textContent = stepData.renter;
+
+                        if (stepData.renter_sign == "Yes"){
+                            document.getElementById('step2-renter-sign').textContent = "underskrift klar";
+                        } 
+                        else if(stepData.owner_sign == "No"){
+                            document.getElementById('step2-owner-sign').textContent = "signatur ikke klar";
+                        }
+                        else {
+                            document.getElementById('step2-renter-sign').textContent = "Väntar på underskrift";
+                        }
+                        // document.getElementById('step2-renter-sign').textContent = stepData.renter_sign;
+                        document.getElementById('step2-personal-code').textContent = stepData.personal_code;
                         break;
                     case 3:
                         step3Data = stepData;
@@ -399,6 +427,12 @@ body {
         <div class="logo">
             <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Logo" style="animation: flash 1.5s infinite;">
         </div>
+
+        <div id="textContainer">
+            <h1>DIGITALA HYRESKONTRAKT</h1>
+            <!-- <p>Place the overlay over a QR code to begin scanning</p> -->
+        </div>
+
     </div>
     <div class="container">
         <div class="card steps-card">
@@ -408,10 +442,12 @@ body {
                         <div class="step-indicator">1</div>
                         <div class="step-data">
                             <div class="step-data-item">
-                                <b>Date:</b> <p id="step1-date"></p>
+                                <!-- <b>(Hyreskontrakt upprättat)</b> -->
+                                <b>Hyreskontrakt upprättat:</b> <p id="step1-date"></p>
                             </div>
                             <div class="step-data-item">
-                                <b>Address:</b> <p id="step1-address"></p>
+                                <!-- <b>Address:</b>  -->
+                                <p id="step1-address"></p>
                             </div>
                         </div>
                     </div>
@@ -422,21 +458,43 @@ body {
                         <div class="step-indicator">2</div>
                         <div class="step-data">
                             <div class="step-data-item">
-                                <b>Owner:</b> <p id="step2-owner"></p>
+                                <h3>Påbörja underskrift</h3> 
+                            </div>
+                            <p>Detta kontrakt har påbörjats för underskrift för lägenheten</p>
+                            <div class="step-data-item">
+                                <b>hyresvärd:</b> <p id="step2-owner"></p>
                             </div>
                             <div class="step-data-item">
-                                <b>Renter:</b> <p id="step2-renter"></p>
+                                <!-- <b>Underskrift:</b>  -->
+                                <p id="step2-owner-sign">Väntar på underskrift</p>
+                            </div>
+                            <div class="step-data-item">
+                                <b>Hyresgäst/överföringsmottagare:</b> <p id="step2-renter"></p>
+                            </div>
+                            <div class="step-data-item">
+                                <!-- <b>Underskrift:</b>  -->
+                                <p id="step2-renter-sign">Väntar på underskrift</p>
+                            </div>
+                            <div class="step-data-item">
+                                <b>Konto/personligkod:</b> <p id="step2-personal-code"></p>
                             </div>
                         </div>
                     </div>
                     <div class="step-text">Steg 2</div>
                 </div>
+
                 <div class="step step-3">
                     <div class="step-content">
                         <div class="step-indicator">3</div>
                         <div class="step-data">
                             <div class="step-data-item">
-                                <b>Last signing</b> <p></p>
+                                <b>Jag godkänner följande överföringar av person</b> <p></p>
+                            </div>
+                            <div class="step-data-item">
+                                <b>(Owner_Name) <p id="step3-owner"></p>  "till"(to)  (Renter_name) <p id="step3-renter"></p></b> <p></p>
+                            </div> 
+                            <div class="step-data-item">
+                                <b>(Code:) kod/totalsumma:</b> <p></p>
                             </div>
                         </div>
                     </div>

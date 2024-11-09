@@ -257,6 +257,21 @@ body {
     min-width: 60px; /* Adjust as needed to align labels */
 }
 
+.hidden {
+    display: none;
+}
+
+.initial-content {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.additional-content {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.additional-content.hidden {
+    display: none;
+}
 @keyframes pulse {
     0%, 100% {
         transform: scale(0.5);

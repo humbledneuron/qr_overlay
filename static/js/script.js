@@ -37,6 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateStepData(stepNumber, stepData) {
+        const step = document.querySelector(`.step-${stepNumber}`);
+        if (step) {
+            const additionalContent = step.querySelector('.additional-content');
+            if (additionalContent) {
+                additionalContent.classList.remove('hidden');
+            }
+        }
+    
         switch (stepNumber) {
             case 1:
                 step1Data = stepData;
@@ -46,42 +54,36 @@ document.addEventListener('DOMContentLoaded', function() {
             case 2:
                 step2Data = stepData;
                 document.getElementById('step2-owner').textContent = stepData.owner;
-
-                if (stepData.owner_sign == "Yes"){
+                
+                if (stepData.owner_sign == "Yes") {
                     document.getElementById('step2-owner-sign').textContent = "underskrift klar";
-                } 
-                else if(stepData.owner_sign == "No"){
+                } else if(stepData.owner_sign == "No") {
                     document.getElementById('step2-owner-sign').textContent = "signatur ikke klar";
-                }
-                else {
+                } else {
                     document.getElementById('step2-owner-sign').textContent = "Väntar på underskrift";
                 }
-                // document.getElementById('step2-owner-sign').textContent = stepData.owner_sign;
-
+                
                 document.getElementById('step2-renter').textContent = stepData.renter;
-
-                if (stepData.renter_sign == "Yes"){
+                
+                if (stepData.renter_sign == "Yes") {
                     document.getElementById('step2-renter-sign').textContent = "underskrift klar";
-                } 
-                else if(stepData.owner_sign == "No"){
-                    document.getElementById('step2-owner-sign').textContent = "signatur ikke klar";
-                }
-                else {
+                } else if(stepData.renter_sign == "No") {
+                    document.getElementById('step2-renter-sign').textContent = "signatur ikke klar";
+                } else {
                     document.getElementById('step2-renter-sign').textContent = "Väntar på underskrift";
                 }
-                // document.getElementById('step2-renter-sign').textContent = stepData.renter_sign;
+                
                 document.getElementById('step2-personal-code').textContent = stepData.personal_code;
                 break;
             case 3:
                 step3Data = stepData;
-                // Add logic to display data for step 3 if needed
                 document.getElementById('step3-owner').textContent = stepData.owner;
                 document.getElementById('step3-renter').textContent = stepData.renter;
                 document.getElementById('step3-code').textContent = stepData.code;
-                
                 break;
         }
     }
+    
     
     let lastUpdateTime = Date.now();
     

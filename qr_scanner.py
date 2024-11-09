@@ -82,10 +82,14 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
     validation_label = ttk.Label(step1_frame, text="", style="Subtitle.TLabel")
     validation_label.pack(fill='x', pady=5)
 
-    complete_button = ModernButton(
-        step1_frame,
-        text="Complete",
-        command=lambda: complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label),
+    # Navigation buttons frame
+    nav_frame = ttk.Frame(step1_frame, style="Modern.TFrame")
+    nav_frame.pack(fill='x', pady=10)
+
+    back_button = ModernButton(
+        nav_frame,
+        text="Back",
+        command=lambda: back_to_steps(step1_frame, step1_button, step2_button, step3_button, button_frame),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -93,19 +97,25 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
         activebackground='#7C3AED',
         relief='flat',
         cursor='hand2',
-        bd=0,
-        highlightthickness=1,
-        padx=10,
-        pady=5,
-        highlightbackground="#8B5CF6",
-        highlightcolor="#8B5CF6",
-        borderwidth=0,
-        width=10,
-        height=1,
-        compound='left',
-        anchor='center'
+        width=10
     )
-    complete_button.pack(fill='x', pady=5)
+    back_button.pack(side='left', padx=5)
+
+    next_button = ModernButton(
+        nav_frame,
+        text="Next",
+        command=lambda: show_completion_page(step1_frame, date_entry, address_entry, scanned_data, 
+                                           step1_button, step2_button, step3_button, button_frame, 1),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=10
+    )
+    next_button.pack(side='right', padx=5)
 
     return step1_frame
 
@@ -153,10 +163,14 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
     validation_label = ttk.Label(step2_frame, text="", style="Subtitle.TLabel")
     validation_label.pack(fill='x', pady=5)
 
-    complete_button = ModernButton(
-        step2_frame,
-        text="Complete",
-        command=lambda: complete_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label),
+    # Navigation buttons frame
+    nav_frame = ttk.Frame(step2_frame, style="Modern.TFrame")
+    nav_frame.pack(fill='x', pady=10)
+
+    back_button = ModernButton(
+        nav_frame,
+        text="Back",
+        command=lambda: back_to_steps(step2_frame, step1_button, step2_button, step3_button, button_frame),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -164,19 +178,28 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
         activebackground='#7C3AED',
         relief='flat',
         cursor='hand2',
-        bd=0,
-        highlightthickness=1,
-        padx=10,
-        pady=5,
-        highlightbackground="#8B5CF6",
-        highlightcolor="#8B5CF6",
-        borderwidth=0,
-        width=10,
-        height=1,
-        compound='left',
-        anchor='center'
+        width=10
     )
-    complete_button.pack(fill='x', pady=5)
+    back_button.pack(side='left', padx=5)
+
+    next_button = ModernButton(
+        nav_frame,
+        text="Next",
+        command=lambda: show_completion_page(
+            step2_frame, owner_entry, renter_entry, personal_code_entry, 
+            owner_sign_var, renter_sign_var, scanned_data, 
+            step1_button, step2_button, step3_button, button_frame, 2
+        ),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=10
+    )
+    next_button.pack(side='right', padx=5)
 
     return step2_frame
 
@@ -204,10 +227,14 @@ def create_step3_frame(control_panel, step1_button, step2_button, step3_button, 
     validation_label = ttk.Label(step3_frame, text="", style="Subtitle.TLabel")
     validation_label.pack(fill='x', pady=5)
 
-    complete_button = ModernButton(
-        step3_frame,
-        text="Complete",
-        command=lambda: complete_step3(step3_frame, owner_entry, renter_entry, code_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label),
+    # Navigation buttons frame
+    nav_frame = ttk.Frame(step3_frame, style="Modern.TFrame")
+    nav_frame.pack(fill='x', pady=10)
+
+    back_button = ModernButton(
+        nav_frame,
+        text="Back",
+        command=lambda: back_to_steps(step3_frame, step1_button, step2_button, step3_button, button_frame),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -215,21 +242,284 @@ def create_step3_frame(control_panel, step1_button, step2_button, step3_button, 
         activebackground='#7C3AED',
         relief='flat',
         cursor='hand2',
-        bd=0,
-        highlightthickness=1,
-        padx=10,
-        pady=5,
-        highlightbackground="#8B5CF6",
-        highlightcolor="#8B5CF6",
-        borderwidth=0,
-        width=10,
-        height=1,
-        compound='left',
-        anchor='center'
+        width=10
     )
-    complete_button.pack(fill='x', pady=5)
+    back_button.pack(side='left', padx=5)
+
+    next_button = ModernButton(
+        nav_frame,
+        text="Next",
+        command=lambda: show_completion_page(
+            step3_frame, owner_entry, renter_entry, code_entry,
+            scanned_data, step1_button, step2_button, step3_button, button_frame, 3
+        ),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=10
+    )
+    next_button.pack(side='right', padx=5)
 
     return step3_frame
+
+def complete_step(completion_frame, *args):
+    """
+    Complete a step in the QR scanner process.
+    
+    Args structure varies by step:
+    Step 1: (entry1, entry2, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, step_number)
+    Step 2: (owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, 
+             scanned_data, step1_btn, step2_btn, step3_btn, button_frame, step_number)
+    Step 3: (owner_entry, renter_entry, code_entry, scanned_data, step1_btn, step2_btn, step3_btn, 
+             button_frame, step_number)
+    """
+    try:
+        # Extract step number (always the last argument)
+        step_number = args[-1]
+        
+        # Process data based on step number
+        if step_number == 1:
+            entry1, entry2, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
+            data = {
+                **scanned_data,
+                'date': entry1.get(),
+                'address': entry2.get()
+            }
+            
+        elif step_number == 2:
+            (owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var,
+             scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _) = args
+            data = {
+                **scanned_data,
+                'owner': owner_entry.get(),
+                'renter': renter_entry.get(),
+                'owner_sign': owner_sign_var.get(),
+                'renter_sign': renter_sign_var.get(),
+                'personal_code': personal_code_entry.get()
+            }
+            
+        elif step_number == 3:
+            owner_entry, renter_entry, code_entry, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
+            data = {
+                **scanned_data,
+                'owner': owner_entry.get(),
+                'renter': renter_entry.get(),
+                'code': code_entry.get()
+            }
+        else:
+            raise ValueError(f"Invalid step number: {step_number}")
+
+        # Validation
+        if any(value == "" for value in data.values()):
+            raise ValueError("Please fill in all required fields")
+
+        # Emit data to server
+        print(f"[DEBUG] Step {step_number} completed with data: {data}")
+        sio.emit('step_completed', {'step': step_number, 'data': data})
+        
+        # Update UI
+        completion_frame.pack_forget()
+        
+        # Update button states
+        if step_number == 1:
+            step1_btn.config(state="disabled")
+            step2_btn.config(state="normal")
+            step3_btn.config(state="disabled")
+        elif step_number == 2:
+            step2_btn.config(state="disabled")
+            step3_btn.config(state="normal")
+        else:
+            step3_btn.config(state="disabled")
+        
+        button_frame.pack(expand=True, fill="both")
+        
+    except ValueError as ve:
+        print(f"Validation Error: {str(ve)}")
+        # Show error message to user
+        validation_label = ttk.Label(completion_frame, text=str(ve), style="Subtitle.TLabel", foreground="red")
+        validation_label.pack(pady=10)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        # Show error message to user
+        validation_label = ttk.Label(completion_frame, text=f"Error: {str(e)}", style="Subtitle.TLabel", foreground="red")
+        validation_label.pack(pady=10)
+
+def show_completion_page(previous_frame, *args):
+    """
+    Show the completion page for a step.
+    Args are passed through from the step forms and vary by step.
+    """
+    step_frame = ttk.Frame(previous_frame.master, style="Modern.TFrame", padding="20")
+    previous_frame.pack_forget()
+    step_frame.pack(expand=True, fill="both")
+
+    title_label = ttk.Label(step_frame, text="Complete Step", style="Title.TLabel")
+    title_label.pack(pady=20)
+
+    # Create validation label
+    validation_label = ttk.Label(step_frame, text="", style="Subtitle.TLabel", foreground="red")
+    validation_label.pack(pady=10)
+
+    complete_button = ModernButton(
+        step_frame,
+        text="Complete",
+        command=lambda: handle_step_completion(step_frame, validation_label, *args),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=15
+    )
+    complete_button.pack(pady=20)
+
+    back_button = ModernButton(
+        step_frame,
+        text="Back",
+        command=lambda: back_to_form(step_frame, previous_frame),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=15
+    )
+    back_button.pack(pady=10)
+
+def handle_step_completion(step_frame, validation_label, *args):
+    """
+    Handle the completion of a step, including validation and data submission.
+    """
+    try:
+        # Get step number (last argument)
+        step_number = args[-1]
+        
+        # Process data based on step number
+        if step_number == 1:
+            entry1, entry2, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
+            if not entry1.get() or not entry2.get():
+                raise ValueError("Please fill in all fields")
+            data = {
+                **scanned_data,
+                'date': entry1.get(),
+                'address': entry2.get()
+            }
+            
+        elif step_number == 2:
+            (owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var,
+             scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _) = args
+            if not all([owner_entry.get(), renter_entry.get(), personal_code_entry.get(),
+                       owner_sign_var.get(), renter_sign_var.get()]):
+                raise ValueError("Please fill in all fields")
+            data = {
+                **scanned_data,
+                'owner': owner_entry.get(),
+                'renter': renter_entry.get(),
+                'owner_sign': owner_sign_var.get(),
+                'renter_sign': renter_sign_var.get(),
+                'personal_code': personal_code_entry.get()
+            }
+            
+        elif step_number == 3:
+            owner_entry, renter_entry, code_entry, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
+            if not all([owner_entry.get(), renter_entry.get(), code_entry.get()]):
+                raise ValueError("Please fill in all fields")
+            data = {
+                **scanned_data,
+                'owner': owner_entry.get(),
+                'renter': renter_entry.get(),
+                'code': code_entry.get()
+            }
+        else:
+            raise ValueError(f"Invalid step number: {step_number}")
+
+        # Emit data to server
+        print(f"[DEBUG] Step {step_number} completed with data: {data}")
+        sio.emit('step_completed', {'step': step_number, 'data': data})
+        
+        # Update UI
+        step_frame.pack_forget()
+        
+        # Update button states
+        if step_number == 1:
+            step1_btn.config(state="disabled")
+            step2_btn.config(state="normal")
+            step3_btn.config(state="disabled")
+        elif step_number == 2:
+            step2_btn.config(state="disabled")
+            step3_btn.config(state="normal")
+        else:
+            step3_btn.config(state="disabled")
+        
+        button_frame.pack(expand=True, fill="both")
+        
+    except ValueError as ve:
+        validation_label.config(text=str(ve))
+        print(f"Validation Error: {str(ve)}")
+    except Exception as e:
+        validation_label.config(text=f"Error: {str(e)}")
+        print(f"Error: {str(e)}")
+        
+def back_to_form(current_frame, previous_frame):
+    current_frame.pack_forget()
+    previous_frame.pack(expand=True, fill="both")
+
+def back_to_steps(current_frame, step1_button, step2_button, step3_button, button_frame):
+    current_frame.pack_forget()
+    button_frame.pack(expand=True, fill="both")
+
+def complete_step(completion_frame, *args):
+    if len(args) == 8:  # Step 1
+        entry1, entry2, scanned_data, step1_button, step2_button, step3_button, button_frame, step_number = args
+        data = {
+            **scanned_data,
+            'date': entry1.get(),
+            'address': entry2.get()
+        }
+    elif len(args) == 9:  # Step 2
+        owner_entry, renter_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label, step_number = args
+        data = {
+            **scanned_data,
+            'owner': owner_entry.get(),
+            'renter': renter_entry.get()
+        }
+    else:  # Step 3
+        owner_entry, renter_entry, code_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, step_number = args
+        data = {
+            **scanned_data,
+            'owner': owner_entry.get(),
+            'renter': renter_entry.get(),
+            'code': code_entry.get()
+        }
+
+    try:
+        print(f"[DEBUG] Step {step_number} completed with data: {data}")
+        sio.emit('step_completed', {'step': step_number, 'data': data})
+        completion_frame.pack_forget()
+        
+        # Update button states
+        if step_number == 1:
+            step1_button.config(state="disabled")
+            step2_button.config(state="normal")
+            step3_button.config(state="disabled")
+        elif step_number == 2:
+            step2_button.config(state="disabled")
+            step3_button.config(state="normal")
+        else:
+            step3_button.config(state="disabled")
+        
+        button_frame.pack(expand=True, fill="both")
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        # Show error message to user
 
 def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label):
     date = date_entry.get()

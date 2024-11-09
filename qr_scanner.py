@@ -150,7 +150,7 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
     complete_button = ModernButton(
         step2_frame,
         text="Complete",
-        command=lambda: complete_step2(step2_frame, owner_entry, renter_entry, scanned_data, step1_button, step2_button, step3_button, button_frame),
+        command=lambda: complete_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, scanned_data, step1_button, step2_button, step3_button, button_frame),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
         bg='#8B5CF6',
@@ -190,10 +190,21 @@ def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_b
     except Exception as e:
         print(f"Error: {str(e)}")
 
-def complete_step2(step2_frame, owner_entry, renter_entry, scanned_data, step1_button, step2_button, step3_button, button_frame):
+def complete_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, scanned_data, step1_button, step2_button, step3_button, button_frame):
     owner = owner_entry.get()
     renter = renter_entry.get()
-    step2_data = {**scanned_data, 'owner': owner, 'renter': renter}
+    owner_sign = owner_sign_var.get()  # Assuming you have a variable for owner sign
+    renter_sign = renter_sign_var.get()  # Assuming you have a variable for renter sign
+    personal_code = personal_code_entry.get()  # Assuming you have an entry for personal code
+    
+    step2_data = {
+        **scanned_data, 
+        'owner': owner, 
+        'renter': renter, 
+        'owner_sign': owner_sign, 
+        'renter_sign': renter_sign, 
+        'personal_code': personal_code
+    }
     
     try:
         print(f"[DEBUG] Step 2 completed with data: {step2_data}")

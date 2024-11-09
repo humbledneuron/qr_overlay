@@ -99,11 +99,9 @@ body {
 
 .step {
     display: flex;
-    flex-direction: column;
     align-items: flex-start;
-    position: relative;
-    z-index: 1;
-    width: 100%;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .step-indicator {
@@ -120,12 +118,13 @@ body {
     color: black;
     border: 3px solid rgb(180, 94, 94);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .step.completed .step-indicator {
     background: #4CAF50;
     border-color: #45a049;
-    transform: scale(1.0);
+    /* transform: scale(1.0); */
     color: white;
 }
 
@@ -133,6 +132,10 @@ body {
     content: '✓';
     position: absolute;
     font-size: 1.5rem;
+}
+
+.step.completed .step-indicator span {
+    display: none;
 }
 
 .step-text {
@@ -146,7 +149,7 @@ body {
 
 .step.completed .step-text {
     opacity: 1;
-    transform: scale(1.05);
+    /* transform: scale(1.05); */
 }
 
 .progress-line {
@@ -220,17 +223,6 @@ body {
     animation: pulse 1.5s infinite ease-in-out;
 }
 
-.step-data {
-            position: relative;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            display:block;
-            animation: fadeIn 0.5s ease-out;
-            
-        }
-
 .step-data p {
             margin: 0.5rem 0;
             font-size: 1rem;
@@ -247,19 +239,22 @@ body {
         }
 
 .step-content {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-.step-data {
-            flex-grow: 1;
-        }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
 
 .step-data {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    animation: fadeIn 0.5s ease-out;
+    flex-grow: 1;
 }
 
 .step-data-item {
@@ -441,68 +436,72 @@ body {
     <div class="container">
         <div class="card steps-card">
             <div class="steps-container">
+                
                 <div class="step step-1">
                     <div class="step-content">
-                        <div class="step-indicator">1</div>
-                        <div class="step-data">
-                            <div class="step-data-item">
-                                <!-- <b>(Hyreskontrakt upprättat)</b> -->
-                                <b>Hyreskontrakt upprättat:</b> <p id="step1-date"></p>
-                            </div>
-                            <div class="step-data-item">
-                                <!-- <b>Address:</b>  -->
-                                <p id="step1-address"></p>
-                            </div>
+                        <div class="step-indicator">
+                            <span>1</span>
+                        </div>
+                        <div class="step-text">Steg 1</div>
+                    </div>
+                    <div class="step-data">
+                        <div class="step-data-item">
+                            <b>Hyreskontrakt upprättat:</b> <p id="step1-date"></p>
+                        </div>
+                        <div class="step-data-item">
+                            <p id="step1-address"></p>
                         </div>
                     </div>
-                    <div class="step-text">Steg 1</div>
                 </div>
+                
                 <div class="step step-2">
                     <div class="step-content">
-                        <div class="step-indicator">2</div>
-                        <div class="step-data">
-                            <div class="step-data-item">
-                                <h3>Påbörja underskrift</h3> 
-                            </div>
-                            <p>Detta kontrakt har påbörjats för underskrift för lägenheten</p>
-                            <div class="step-data-item">
-                                <b>hyresvärd:</b> <p id="step2-owner"></p>
-                            </div>
-                            <div class="step-data-item">
-                                <!-- <b>Underskrift:</b>  -->
-                                <p id="step2-owner-sign">Väntar på underskrift</p>
-                            </div>
-                            <div class="step-data-item">
-                                <b>Hyresgäst/överföringsmottagare:</b> <p id="step2-renter"></p>
-                            </div>
-                            <div class="step-data-item">
-                                <!-- <b>Underskrift:</b>  -->
-                                <p id="step2-renter-sign">Väntar på underskrift</p>
-                            </div>
-                            <div class="step-data-item">
-                                <b>Konto/personligkod:</b> <p id="step2-personal-code"></p>
-                            </div>
+                        <div class="step-indicator">
+                            <span>2</span>
+                        </div>
+                        <div class="step-text">Steg 2</div>
+                    </div>
+                    <div class="step-data">
+                        <div class="step-data-item">
+                            <h3>Påbörja underskrift</h3> 
+                        </div>
+                        <p>Detta kontrakt har påbörjats för underskrift för lägenheten</p>
+                        <div class="step-data-item">
+                            <b>hyresvärd:</b> <p id="step2-owner"></p>
+                        </div>
+                        <div class="step-data-item">
+                            <p id="step2-owner-sign">Väntar på underskrift</p>
+                        </div>
+                        <div class="step-data-item">
+                            <b>Hyresgäst/överföringsmottagare:</b> <p id="step2-renter"></p>
+                        </div>
+                        <div class="step-data-item">
+                            <p id="step2-renter-sign">Väntar på underskrift</p>
+                        </div>
+                        <div class="step-data-item">
+                            <b>Konto/personligkod:</b> <p id="step2-personal-code"></p>
                         </div>
                     </div>
-                    <div class="step-text">Steg 2</div>
                 </div>
-
+                
                 <div class="step step-3">
                     <div class="step-content">
-                        <div class="step-indicator">3</div>
-                        <div class="step-data">
-                            <div class="step-data-item">
-                                <b>Jag godkänner följande överföringar av person</b> <p></p>
-                            </div>
-                            <div class="step-data-item">
-                                <b> <span style="color: gray;" id="step3-owner">(Owner_Name)</span>  till  <span  style="color: gray;" id="step3-renter">(Renter_name) </p></b>
-                            </div> 
-                            <div class="step-data-item">
-                                <b>kod/totalsumma:</b> <p id="step3-code"></p>
-                            </div>
+                        <div class="step-indicator">
+                            <span>3</span>
+                        </div>
+                        <div class="step-text">Steg 3</div>
+                    </div>
+                    <div class="step-data">
+                        <div class="step-data-item">
+                            <b>Jag godkänner följande överföringar av person</b> <p></p>
+                        </div>
+                        <div class="step-data-item">
+                            <b> <span style="color: gray;" id="step3-owner">(Owner_Name)</span>  till  <span  style="color: gray;" id="step3-renter">(Renter_name) </p></b>
+                        </div> 
+                        <div class="step-data-item">
+                            <b>kod/totalsumma:</b> <p id="step3-code"></p>
                         </div>
                     </div>
-                    <div class="step-text">Steg 3</div>
                 </div>
             </div>
         </div>

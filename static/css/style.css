@@ -80,23 +80,6 @@ body {
     margin-right: 10vw;
 }
 
-.steps-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 2rem 0;
-    padding: 0 1rem;
-    gap: 2rem;
-    position: relative;
-}
-
-.step {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
 .step-indicator {
     width: 60px;
     height: 60px;
@@ -228,35 +211,6 @@ body {
     display: block;
 }
 
-.step-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.step-data {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    animation: fadeIn 0.5s ease-out;
-    flex-grow: 1;
-}
-
-.step-data-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.step-data-item b {
-    min-width: 60px; /* Adjust as needed to align labels */
-}
-
 .hidden {
     display: none;
 }
@@ -271,6 +225,99 @@ body {
 
 .additional-content.hidden {
     display: none;
+}
+
+
+/* Set consistent width for step containers */
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 0;
+    padding: 0 1rem;
+    gap: 2rem;
+    position: relative;
+    width: 100%;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.step-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0px; /* Set minimum width for the indicator column */
+}
+
+.step-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    animation: fadeIn 0.5s ease-out;
+    flex-grow: 1;
+    width: 100%;
+    min-height: 0px; /* Ensures minimum height even when empty */
+}
+
+/* Ensure consistent spacing in step data items */
+.step-data-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.step-data-item b {
+    min-width: 100px; /* Consistent width for labels */
+}
+
+.step-data-item p {
+    margin: 0;
+    flex-grow: 1;
+}
+
+/* Initial and additional content consistency */
+.initial-content, 
+.additional-content {
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .step-content {
+        min-width: 80px;
+    }
+
+    .step-data-item b {
+        min-width: 80px;
+    }
+
+    .step-data {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .step-data-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .step-data-item b {
+        min-width: unset;
+    }
 }
 @keyframes pulse {
     0%, 100% {

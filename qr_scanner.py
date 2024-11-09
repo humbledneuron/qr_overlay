@@ -130,30 +130,10 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
     owner_entry = ttk.Entry(step2_frame)
     owner_entry.pack(fill='x', pady=5)
 
-    owner_sign_frame = ttk.Frame(step2_frame, style="Modern.TFrame")
-    owner_sign_frame.pack(fill='x', pady=5)
-    owner_sign_label = ttk.Label(owner_sign_frame, text="Signed in?", style="Subtitle.TLabel")
-    owner_sign_label.pack(side='left', padx=5)
-    owner_sign_var = tk.StringVar(value="")
-    owner_sign_yes = ttk.Radiobutton(owner_sign_frame, text="Yes", variable=owner_sign_var, value="Yes", style="Modern.TRadiobutton")
-    owner_sign_yes.pack(side='left', padx=5)
-    owner_sign_no = ttk.Radiobutton(owner_sign_frame, text="No", variable=owner_sign_var, value="No", style="Modern.TRadiobutton")
-    owner_sign_no.pack(side='left', padx=5)
-
     renter_label = ttk.Label(step2_frame, text="Renter:", style="Subtitle.TLabel")
     renter_label.pack(fill='x', pady=5)
     renter_entry = ttk.Entry(step2_frame)
     renter_entry.pack(fill='x', pady=5)
-
-    renter_sign_frame = ttk.Frame(step2_frame, style="Modern.TFrame")
-    renter_sign_frame.pack(fill='x', pady=5)
-    renter_sign_label = ttk.Label(renter_sign_frame, text="Signed in?", style="Subtitle.TLabel")
-    renter_sign_label.pack(side='left', padx=5)
-    renter_sign_var = tk.StringVar(value="")
-    renter_sign_yes = ttk.Radiobutton(renter_sign_frame, text="Yes", variable=renter_sign_var, value="Yes", style="Modern.TRadiobutton")
-    renter_sign_yes.pack(side='left', padx=5)
-    renter_sign_no = ttk.Radiobutton(renter_sign_frame, text="No", variable=renter_sign_var, value="No", style="Modern.TRadiobutton")
-    renter_sign_no.pack(side='left', padx=5)
 
     personal_code_label = ttk.Label(step2_frame, text="Personal code:", style="Subtitle.TLabel")
     personal_code_label.pack(fill='x', pady=5)
@@ -185,10 +165,15 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
     next_button = ModernButton(
         nav_frame,
         text="Next",
-        command=lambda: show_completion_page(
-            step2_frame, owner_entry, renter_entry, personal_code_entry, 
-            owner_sign_var, renter_sign_var, scanned_data, 
-            step1_button, step2_button, step3_button, button_frame, 2
+        command=lambda: show_signing_page(
+            step2_frame,
+            owner_entry,
+            renter_entry,
+            personal_code_entry,
+            step1_button,
+            step2_button,
+            step3_button,
+            button_frame
         ),
         font=('Segoe UI', 10, 'bold'),
         fg='white',
@@ -203,6 +188,118 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
 
     return step2_frame
 
+def show_signing_page(previous_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame):
+    """Show the signing page for step 2."""
+    
+    # Validate entries first
+    if not all([owner_entry.get(), renter_entry.get(), personal_code_entry.get()]):
+        validation_label = ttk.Label(previous_frame, text="Please fill in all fields", style="Subtitle.TLabel", foreground="red")
+        validation_label.pack(pady=10)
+        return
+
+    signing_frame = ttk.Frame(previous_frame.master, style="Modern.TFrame", padding="20")
+    previous_frame.pack_forget()
+    signing_frame.pack(expand=True, fill="both")
+
+    title_label = ttk.Label(signing_frame, text="Signatures Required", style="Title.TLabel")
+    title_label.pack(pady=20)
+
+    # Owner signing section
+    owner_sign_frame = ttk.Frame(signing_frame, style="Modern.TFrame")
+    owner_sign_frame.pack(fill='x', pady=10)
+    owner_sign_label = ttk.Label(owner_sign_frame, text=f"Is {owner_entry.get()} (Owner) signed in?", style="Subtitle.TLabel")
+    owner_sign_label.pack(side='left', padx=5)
+    owner_sign_var = tk.StringVar(value="")
+    owner_sign_yes = ttk.Radiobutton(owner_sign_frame, text="Yes", variable=owner_sign_var, value="Yes", style="Modern.TRadiobutton")
+    owner_sign_yes.pack(side='left', padx=5)
+    owner_sign_no = ttk.Radiobutton(owner_sign_frame, text="No", variable=owner_sign_var, value="No", style="Modern.TRadiobutton")
+    owner_sign_no.pack(side='left', padx=5)
+
+    # Renter signing section
+    renter_sign_frame = ttk.Frame(signing_frame, style="Modern.TFrame")
+    renter_sign_frame.pack(fill='x', pady=10)
+    renter_sign_label = ttk.Label(renter_sign_frame, text=f"Is {renter_entry.get()} (Renter) signed in?", style="Subtitle.TLabel")
+    renter_sign_label.pack(side='left', padx=5)
+    renter_sign_var = tk.StringVar(value="")
+    renter_sign_yes = ttk.Radiobutton(renter_sign_frame, text="Yes", variable=renter_sign_var, value="Yes", style="Modern.TRadiobutton")
+    renter_sign_yes.pack(side='left', padx=5)
+    renter_sign_no = ttk.Radiobutton(renter_sign_frame, text="No", variable=renter_sign_var, value="No", style="Modern.TRadiobutton")
+    renter_sign_no.pack(side='left', padx=5)
+
+    validation_label = ttk.Label(signing_frame, text="", style="Subtitle.TLabel", foreground="red")
+    validation_label.pack(pady=10)
+
+    # Navigation buttons
+    nav_frame = ttk.Frame(signing_frame, style="Modern.TFrame")
+    nav_frame.pack(fill='x', pady=10)
+
+    back_button = ModernButton(
+        nav_frame,
+        text="Back",
+        command=lambda: back_to_form(signing_frame, previous_frame),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=10
+    )
+    back_button.pack(side='left', padx=5)
+
+    next_button = ModernButton(
+        nav_frame,
+        text="Next",
+        command=lambda: validate_and_show_completion(
+            signing_frame,
+            owner_entry,
+            renter_entry,
+            personal_code_entry,
+            owner_sign_var,
+            renter_sign_var,
+            step1_button,
+            step2_button,
+            step3_button,
+            button_frame,
+            validation_label
+        ),
+        font=('Segoe UI', 10, 'bold'),
+        fg='white',
+        bg='#8B5CF6',
+        activeforeground='white',
+        activebackground='#7C3AED',
+        relief='flat',
+        cursor='hand2',
+        width=10
+    )
+    next_button.pack(side='right', padx=5)
+
+def validate_and_show_completion(signing_frame, owner_entry, renter_entry, personal_code_entry, 
+                               owner_sign_var, renter_sign_var, step1_button, step2_button, 
+                               step3_button, button_frame, validation_label):
+    """Validate signatures and show completion page if valid."""
+    
+    # Validate signatures
+    if not owner_sign_var.get() or not renter_sign_var.get():
+        validation_label.config(text="Please select signing status for both owner and renter")
+        return
+
+    # Show completion page
+    show_completion_page(
+        signing_frame,
+        owner_entry,
+        renter_entry,
+        personal_code_entry,
+        owner_sign_var,
+        renter_sign_var,
+        scanned_data,
+        step1_button,
+        step2_button,
+        step3_button,
+        button_frame,
+        2
+    )
 def create_step3_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
     global scanned_data
 

@@ -45,8 +45,13 @@ body {
     font-size: 2.2rem;
     color: black;
     font-size: 48px;
-    font-family: "Sweden Sans";
+    /* font-family: "Oswald"; */
     margin-top: 0.4rem;
+
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
 }
 
 #textContainer p {

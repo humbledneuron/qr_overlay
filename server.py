@@ -47,6 +47,11 @@ def handle_step_completion(data):
     # Broadcast the step completion to all connected clients
     socketio.emit('step_completed', {'step': step_number, 'data': scanned_data})
 
+@socketio.on('complete_step')
+def complete_step(data):
+    print(f"Emitting complete_step event with data: {data}")
+    socketio.emit('complete_step', data)
+
 if __name__ == '__main__':
     # socketio.run(app, host='0.0.0.0', port=5000, debug=True)
     socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

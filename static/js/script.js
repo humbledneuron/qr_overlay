@@ -96,4 +96,18 @@ document.addEventListener('DOMContentLoaded', function() {
             qrImage.classList.remove('active');
         }
     }, 1000);
+
+    // Function to handle the completion of a step
+    function completeStep(stepNumber) {
+        const stepIndicator = document.querySelector(`.step-indicator-${stepNumber}`);
+        if (stepIndicator) {
+            stepIndicator.classList.add('confirmed');
+        }
+    }
+
+    // Listen for the 'complete_step' event
+    socket.on('complete_step', function(data) {
+        const stepNumber = data.step;
+        completeStep(stepNumber);
+    });
 });

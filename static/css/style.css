@@ -96,19 +96,24 @@ body {
     position: relative;
 }
 
-.step.completed .step-indicator {
+.confirmed {
+    background-color: green;
+    color: white;
+}
+
+.step-indicator.confirmed {
     background: #4CAF50;
     border-color: #45a049;
     color: white;
 }
 
-.step.completed .step-indicator::after {
+.step-indicator.confirmed::after {
     content: '✓';
     position: absolute;
     font-size: 1.5rem;
 }
 
-.step.completed .step-indicator span {
+.step-indicator.confirmed span {
     display: none;
 }
 

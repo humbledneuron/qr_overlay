@@ -326,20 +326,25 @@ def show_completion_page(previous_frame, step1_button, step2_button, step3_butto
 def complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number, scanned_data):
     try:
         print(f"[DEBUG] Step {step_number} completed")
-        sio.emit('step_completed', {'step': step_number, 'data': scanned_data})
         completion_frame.pack_forget()
         
         if step_number == 1:
             step1_button.config(state="disabled")
             step2_button.config(state="normal")
             step3_button.config(state="disabled")
+            sio.emit('complete_step', {'step': 1})
         elif step_number == 2:
             step2_button.config(state="disabled")
             step3_button.config(state="normal")
+            sio.emit('complete_step', {'step': 2})
         else:
             step3_button.config(state="disabled")
+            sio.emit('complete_step', {'step': 3})
         
         button_frame.pack(expand=True, fill="both")
+        
+        # Emit an event to the front-end to complete the step
+        print(f"[DEBUG] Step {step_number} emitted")
     except Exception as e:
         print(f"Error: {str(e)}")
 

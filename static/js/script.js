@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    
     let lastUpdateTime = Date.now();
     
     socket.on('update_qr_code_image', function() {

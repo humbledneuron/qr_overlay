@@ -86,10 +86,27 @@ def create_step1_frame(control_panel, step1_button, step2_button, step3_button, 
     back_button = ModernButton(nav_frame, text="Back", command=lambda: back_to_steps(step1_frame, step1_button, step2_button, step3_button, button_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     back_button.pack(side='left', padx=5)
 
-    next_button = ModernButton(nav_frame, text="Next", command=lambda: show_completion_page(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, 1), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
+    next_button = ModernButton(nav_frame, text="Next", command=lambda: send_data_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     next_button.pack(side='right', padx=5)
 
     return step1_frame
+
+def send_data_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label):
+    date = date_entry.get()
+    address = address_entry.get()
+    
+    if not date or not address:
+        validation_label.config(text="Please fill in all required fields.", foreground="red")
+        return
+    
+    step1_data = {**scanned_data, 'date': date, 'address': address}
+    
+    try:
+        print(f"[DEBUG] Step 1 data sent with data: {step1_data}")
+        sio.emit('step_completed', {'step': 1, 'data': step1_data})
+        show_completion_page(step1_frame, step1_button, step2_button, step3_button, button_frame, 1)
+    except Exception as e:
+        print(f"Error: {str(e)}")
 
 def create_step2_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
     global scanned_data
@@ -127,13 +144,36 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
 
     next_button = ModernButton(
         nav_frame, text="Next",
-        command=lambda: show_signing_page( step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame ),
+        command=lambda: send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, validation_label),
         font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED',
         relief='flat', cursor='hand2', width=10
     )
     next_button.pack(side='right', padx=5)
 
     return step2_frame
+
+def send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, validation_label):
+    owner = owner_entry.get()
+    renter = renter_entry.get()
+    personal_code = personal_code_entry.get()
+    
+    if not all([owner, renter, personal_code]):
+        validation_label.config(text="Please fill in all required fields.", foreground="red")
+        return
+    
+    step2_data = {
+        **scanned_data,
+        'owner': owner,
+        'renter': renter,
+        'personal_code': personal_code
+    }
+    
+    try:
+        print(f"[DEBUG] Step 2 data sent with data: {step2_data}")
+        sio.emit('step_completed', {'step': 2, 'data': step2_data})
+        show_signing_page(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame)
+    except Exception as e:
+        print(f"Error: {str(e)}")
 
 def show_signing_page(previous_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame):
     """Show the signing page for step 2."""
@@ -200,7 +240,7 @@ def validate_and_show_completion(signing_frame, owner_entry, renter_entry, perso
         'renter_sign': renter_sign_var.get()
     })
 
-    show_completion_page(signing_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, scanned_data, step1_button, step2_button, step3_button, button_frame, 2)
+    show_completion_page(signing_frame, step1_button, step2_button, step3_button, button_frame, 2)
 
 def create_step3_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
     global scanned_data
@@ -243,193 +283,52 @@ def create_step3_frame(control_panel, step1_button, step2_button, step3_button, 
     back_button = ModernButton(nav_frame, text="Back", command=lambda: back_to_steps(step3_frame, step1_button, step2_button, step3_button, button_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     back_button.pack(side='left', padx=5)
 
-    next_button = ModernButton(nav_frame, text="Next", command=lambda: show_completion_page(step3_frame, owner_entry, renter_entry, code_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, 3), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
+    next_button = ModernButton(nav_frame, text="Next", command=lambda: send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_button, step2_button, step3_button, button_frame, validation_label), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     next_button.pack(side='right', padx=5)
 
     return step3_frame
 
-def complete_step(completion_frame, *args):
+def send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_button, step2_button, step3_button, button_frame, validation_label):
+    owner = owner_entry.get()
+    renter = renter_entry.get()
+    code = code_entry.get()
+    
+    if not all([owner, renter, code]):
+        validation_label.config(text="Please fill in all required fields.", foreground="red")
+        return
+    
+    step3_data = {
+        **scanned_data,
+        'owner': owner,
+        'renter': renter,
+        'code': code
+    }
+    
     try:
-        step_number = args[-1]
-        
-        if step_number == 1:
-            entry1, entry2, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
-            data = {
-                **scanned_data,
-                'date': entry1.get(),
-                'address': entry2.get()
-            }
-            
-        elif step_number == 2:
-            (owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var,
-             scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _) = args
-            data = {
-                **scanned_data,
-                'owner': owner_entry.get(),
-                'renter': renter_entry.get(),
-                'owner_sign': owner_sign_var.get(),
-                'renter_sign': renter_sign_var.get(),
-                'personal_code': personal_code_entry.get()
-            }
-            
-        elif step_number == 3:
-            owner_entry, renter_entry, code_entry, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
-            data = {
-                **scanned_data,
-                'owner': owner_entry.get(),
-                'renter': renter_entry.get(),
-                'code': code_entry.get()
-            }
-        else:
-            raise ValueError(f"Invalid step number: {step_number}")
-
-        if any(value == "" for value in data.values()):
-            raise ValueError("Please fill in all required fields")
-
-        print(f"[DEBUG] Step {step_number} completed with data: {data}")
-        sio.emit('step_completed', {'step': step_number, 'data': data})
-        
-        completion_frame.pack_forget()
-        
-        if step_number == 1:
-            step1_btn.config(state="disabled")
-            step2_btn.config(state="normal")
-            step3_btn.config(state="disabled")
-        elif step_number == 2:
-            step2_btn.config(state="disabled")
-            step3_btn.config(state="normal")
-        else:
-            step3_btn.config(state="disabled")
-        
-        button_frame.pack(expand=True, fill="both")
-        
-    except ValueError as ve:
-        print(f"Validation Error: {str(ve)}")
-        validation_label = ttk.Label(completion_frame, text=str(ve), style="Subtitle.TLabel", foreground="red")
-        validation_label.pack(pady=10)
+        print(f"[DEBUG] Step 3 data sent with data: {step3_data}")
+        sio.emit('step_completed', {'step': 3, 'data': step3_data})
+        show_completion_page(step3_frame, step1_button, step2_button, step3_button, button_frame, 3)
     except Exception as e:
         print(f"Error: {str(e)}")
-        validation_label = ttk.Label(completion_frame, text=f"Error: {str(e)}", style="Subtitle.TLabel", foreground="red")
-        validation_label.pack(pady=10)
 
-def show_completion_page(previous_frame, *args):
-    step_frame = ttk.Frame(previous_frame.master, style="Modern.TFrame", padding="20")
+def show_completion_page(previous_frame, step1_button, step2_button, step3_button, button_frame, step_number):
+    completion_frame = ttk.Frame(previous_frame.master, style="Modern.TFrame", padding="20")
     previous_frame.pack_forget()
-    step_frame.pack(expand=True, fill="both")
+    completion_frame.pack(expand=True, fill="both")
 
-    title_label = ttk.Label(step_frame, text="Complete Step", style="Title.TLabel")
+    title_label = ttk.Label(completion_frame, text="Complete Step", style="Title.TLabel")
     title_label.pack(pady=5)
 
-    validation_label = ttk.Label(step_frame, text="", style="Subtitle.TLabel", foreground="red")
-    validation_label.pack(pady=10)
-
-    complete_button = ModernButton(step_frame, text="Complete", command=lambda: handle_step_completion(step_frame, validation_label, *args), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
+    complete_button = ModernButton(completion_frame, text="Complete", command=lambda: complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
     complete_button.pack(pady=20)
 
-    back_button = ModernButton(step_frame, text="Back", command=lambda: back_to_form(step_frame, previous_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
+    back_button = ModernButton(completion_frame, text="Back", command=lambda: back_to_form(completion_frame, previous_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
     back_button.pack(pady=10)
 
-def handle_step_completion(step_frame, validation_label, *args):
+def complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number):
     try:
-        step_number = args[-1]
-        
-        if step_number == 1:
-            entry1, entry2, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
-            if not entry1.get() or not entry2.get():
-                raise ValueError("Please fill in all fields")
-            data = {
-                **scanned_data,
-                'date': entry1.get(),
-                'address': entry2.get()
-            }
-            
-        elif step_number == 2:
-            (owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var,
-             scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _) = args
-            if not all([owner_entry.get(), renter_entry.get(), personal_code_entry.get(),
-                       owner_sign_var.get(), renter_sign_var.get()]):
-                raise ValueError("Please fill in all fields")
-            data = {
-                **scanned_data,
-                'owner': owner_entry.get(),
-                'renter': renter_entry.get(),
-                'owner_sign': owner_sign_var.get(),
-                'renter_sign': renter_sign_var.get(),
-                'personal_code': personal_code_entry.get()
-            }
-            
-        elif step_number == 3:
-            owner_entry, renter_entry, code_entry, scanned_data, step1_btn, step2_btn, step3_btn, button_frame, _ = args
-            if not all([owner_entry.get(), renter_entry.get(), code_entry.get()]):
-                raise ValueError("Please fill in all fields")
-            data = {
-                **scanned_data,
-                'owner': owner_entry.get(),
-                'renter': renter_entry.get(),
-                'code': code_entry.get()
-            }
-        else:
-            raise ValueError(f"Invalid step number: {step_number}")
-
-        print(f"[DEBUG] Step {step_number} completed with data: {data}")
-        sio.emit('step_completed', {'step': step_number, 'data': data})
-        
-        step_frame.pack_forget()
-        
-        if step_number == 1:
-            step1_btn.config(state="disabled")
-            step2_btn.config(state="normal")
-            step3_btn.config(state="disabled")
-        elif step_number == 2:
-            step2_btn.config(state="disabled")
-            step3_btn.config(state="normal")
-        else:
-            step3_btn.config(state="disabled")
-        
-        button_frame.pack(expand=True, fill="both")
-        
-    except ValueError as ve:
-        validation_label.config(text=str(ve))
-        print(f"Validation Error: {str(ve)}")
-    except Exception as e:
-        validation_label.config(text=f"Error: {str(e)}")
-        print(f"Error: {str(e)}")
-        
-def back_to_form(current_frame, previous_frame):
-    current_frame.pack_forget()
-    previous_frame.pack(expand=True, fill="both")
-
-def back_to_steps(current_frame, step1_button, step2_button, step3_button, button_frame):
-    current_frame.pack_forget()
-    button_frame.pack(expand=True, fill="both")
-
-def complete_step(completion_frame, *args):
-    if len(args) == 8:  # Step 1
-        entry1, entry2, scanned_data, step1_button, step2_button, step3_button, button_frame, step_number = args
-        data = {
-            **scanned_data,
-            'date': entry1.get(),
-            'address': entry2.get()
-        }
-    elif len(args) == 9:  # Step 2
-        owner_entry, renter_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label, step_number = args
-        data = {
-            **scanned_data,
-            'owner': owner_entry.get(),
-            'renter': renter_entry.get()
-        }
-    else:  # Step 3
-        owner_entry, renter_entry, code_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, step_number = args
-        data = {
-            **scanned_data,
-            'owner': owner_entry.get(),
-            'renter': renter_entry.get(),
-            'code': code_entry.get()
-        }
-
-    try:
-        print(f"[DEBUG] Step {step_number} completed with data: {data}")
-        sio.emit('step_completed', {'step': step_number, 'data': data})
+        print(f"[DEBUG] Step {step_number} completed")
+        sio.emit('step_completed', {'step': step_number, 'data': scanned_data})
         completion_frame.pack_forget()
         
         if step_number == 1:
@@ -446,84 +345,13 @@ def complete_step(completion_frame, *args):
     except Exception as e:
         print(f"Error: {str(e)}")
 
-def complete_step1(step1_frame, date_entry, address_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label):
-    date = date_entry.get()
-    address = address_entry.get()
-    
-    if not date or not address:
-        validation_label.config(text="Please fill in all required fields.", foreground="red")
-        return
-    
-    step1_data = {**scanned_data, 'date': date, 'address': address}
-    
-    try:
-        print(f"[DEBUG] Step 1 completed with data: {step1_data}")
-        sio.emit('step_completed', {'step': 1, 'data': step1_data})
-        step1_frame.pack_forget()
-        step1_button.config(state="disabled")
-        step2_button.config(state="normal")
-        step3_button.config(state="disabled")
-        button_frame.pack(expand=True, fill="both")
-    except Exception as e:
-        print(f"Error: {str(e)}")
+def back_to_form(current_frame, previous_frame):
+    current_frame.pack_forget()
+    previous_frame.pack(expand=True, fill="both")
 
-def complete_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label):
-    owner = owner_entry.get()
-    renter = renter_entry.get()
-    owner_sign = owner_sign_var.get() 
-    renter_sign = renter_sign_var.get() 
-    personal_code = personal_code_entry.get() 
-    
-    if not owner or not renter or not owner_sign or not renter_sign or not personal_code:
-        validation_label.config(text="Please fill in all required fields.", foreground="red")
-        return
-    
-    step2_data = {
-        **scanned_data, 
-        'owner': owner, 
-        'renter': renter, 
-        'owner_sign': owner_sign, 
-        'renter_sign': renter_sign, 
-        'personal_code': personal_code
-    }
-    
-    try:
-        print(f"[DEBUG] Step 2 completed with data: {step2_data}")
-        sio.emit('step_completed', {'step': 2, 'data': step2_data})
-        step2_frame.pack_forget()
-        step1_button.config(state="disabled")
-        step2_button.config(state="disabled")
-        step3_button.config(state="normal")
-        button_frame.pack(expand=True, fill="both")
-    except Exception as e:
-        print(f"Error: {str(e)}")
-
-def complete_step3(step3_frame, owner_entry, renter_entry, code_entry, scanned_data, step1_button, step2_button, step3_button, button_frame, validation_label):
-    owner = owner_entry.get()
-    renter = renter_entry.get()
-    code = code_entry.get()
-    
-    if not owner or not renter or not code:
-        validation_label.config(text="Please fill in all required fields.", foreground="red")
-        return
-    
-    step3_data = {
-        **scanned_data, 
-        'owner': owner, 
-        'renter': renter, 
-        'code': code
-    }
-    
-    try:
-        print(f"[DEBUG] Step 3 completed with data: {step3_data}")
-        sio.emit('step_completed', {'step': 3, 'data': step3_data})
-        step3_frame.pack_forget()
-        step1_button.config(state="disabled")
-        step2_button.config(state="disabled")
-        step3_button.config(state="disabled")
-        button_frame.pack(expand=True, fill="both")
-    except Exception as e:
-        print(f"Error: {str(e)}")
+def back_to_steps(current_frame, step1_button, step2_button, step3_button, button_frame):
+    current_frame.pack_forget()
+    button_frame.pack(expand=True, fill="both")
 
 def create_overlay():
     global stop_scanning
@@ -603,7 +431,8 @@ def create_overlay():
     root.bind("<Configure>", align_windows)
 
     try:
-        sio.connect('https://oneflow-qr.onrender.com/')
+        sio.connect('http://localhost:5000')
+        # sio.connect('https://oneflow-qr.onrender.com/')
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")

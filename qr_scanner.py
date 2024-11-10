@@ -58,9 +58,7 @@ def start_scanning(root):
             print(f"Scanning error: {e}")
             time.sleep(1)
 
-def create_step1_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
-    global scanned_data
-
+def create_step1_frame(control_panel, step1_button, step2_button, step3_button, button_frame, scanned_data):
     step1_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step1_frame.pack(expand=True, fill="both")
 
@@ -104,13 +102,11 @@ def send_data_step1(step1_frame, date_entry, address_entry, scanned_data, step1_
     try:
         print(f"[DEBUG] Step 1 data sent with data: {step1_data}")
         sio.emit('step_completed', {'step': 1, 'data': step1_data})
-        show_completion_page(step1_frame, step1_button, step2_button, step3_button, button_frame, 1)
+        show_completion_page(step1_frame, step1_button, step2_button, step3_button, button_frame, 1, step1_data)
     except Exception as e:
         print(f"Error: {str(e)}")
 
-def create_step2_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
-    global scanned_data
-
+def create_step2_frame(control_panel, step1_button, step2_button, step3_button, button_frame, scanned_data):
     step2_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step2_frame.pack(expand=True, fill="both")
 
@@ -144,7 +140,7 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
 
     next_button = ModernButton(
         nav_frame, text="Next",
-        command=lambda: send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, validation_label),
+        command=lambda: send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data),
         font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED',
         relief='flat', cursor='hand2', width=10
     )
@@ -152,7 +148,7 @@ def create_step2_frame(control_panel, step1_button, step2_button, step3_button, 
 
     return step2_frame
 
-def send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, validation_label):
+def send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data):
     owner = owner_entry.get()
     renter = renter_entry.get()
     personal_code = personal_code_entry.get()
@@ -171,11 +167,11 @@ def send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry,
     try:
         print(f"[DEBUG] Step 2 data sent with data: {step2_data}")
         sio.emit('step_completed', {'step': 2, 'data': step2_data})
-        show_signing_page(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame)
+        show_signing_page(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, scanned_data)
     except Exception as e:
         print(f"Error: {str(e)}")
 
-def show_signing_page(previous_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame):
+def show_signing_page(previous_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, scanned_data):
     """Show the signing page for step 2."""
     
     if not all([owner_entry.get(), renter_entry.get(), personal_code_entry.get()]):
@@ -219,19 +215,18 @@ def show_signing_page(previous_frame, owner_entry, renter_entry, personal_code_e
     back_button = ModernButton(nav_frame, text="Back", command=lambda: back_to_form(signing_frame, previous_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     back_button.pack(side='left', padx=5)
 
-    next_button = ModernButton(nav_frame, text="Next", command=lambda: validate_and_show_completion(signing_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, step1_button, step2_button, step3_button, button_frame, validation_label), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
+    next_button = ModernButton(nav_frame, text="Next", command=lambda: validate_and_show_completion(signing_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     next_button.pack(side='right', padx=5)
 
 def validate_and_show_completion(signing_frame, owner_entry, renter_entry, personal_code_entry, 
                                owner_sign_var, renter_sign_var, step1_button, step2_button, 
-                               step3_button, button_frame, validation_label):
+                               step3_button, button_frame, validation_label, scanned_data):
     """Validate signatures and show completion page if valid."""
     
     if not owner_sign_var.get() or not renter_sign_var.get():
         validation_label.config(text="Please select signing status for both owner and renter")
         return
 
-    global scanned_data
     scanned_data.update({
         'owner': owner_entry.get(),
         'renter': renter_entry.get(),
@@ -240,11 +235,9 @@ def validate_and_show_completion(signing_frame, owner_entry, renter_entry, perso
         'renter_sign': renter_sign_var.get()
     })
 
-    show_completion_page(signing_frame, step1_button, step2_button, step3_button, button_frame, 2)
+    show_completion_page(signing_frame, step1_button, step2_button, step3_button, button_frame, 2, scanned_data)
 
-def create_step3_frame(control_panel, step1_button, step2_button, step3_button, button_frame):
-    global scanned_data
-
+def create_step3_frame(control_panel, step1_button, step2_button, step3_button, button_frame, scanned_data):
     step3_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
     step3_frame.pack(expand=True, fill="both")
 
@@ -283,12 +276,12 @@ def create_step3_frame(control_panel, step1_button, step2_button, step3_button, 
     back_button = ModernButton(nav_frame, text="Back", command=lambda: back_to_steps(step3_frame, step1_button, step2_button, step3_button, button_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     back_button.pack(side='left', padx=5)
 
-    next_button = ModernButton(nav_frame, text="Next", command=lambda: send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_button, step2_button, step3_button, button_frame, validation_label), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
+    next_button = ModernButton(nav_frame, text="Next", command=lambda: send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     next_button.pack(side='right', padx=5)
 
     return step3_frame
 
-def send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_button, step2_button, step3_button, button_frame, validation_label):
+def send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data):
     owner = owner_entry.get()
     renter = renter_entry.get()
     code = code_entry.get()
@@ -307,11 +300,11 @@ def send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_bu
     try:
         print(f"[DEBUG] Step 3 data sent with data: {step3_data}")
         sio.emit('step_completed', {'step': 3, 'data': step3_data})
-        show_completion_page(step3_frame, step1_button, step2_button, step3_button, button_frame, 3)
+        show_completion_page(step3_frame, step1_button, step2_button, step3_button, button_frame, 3, step3_data)
     except Exception as e:
         print(f"Error: {str(e)}")
 
-def show_completion_page(previous_frame, step1_button, step2_button, step3_button, button_frame, step_number):
+def show_completion_page(previous_frame, step1_button, step2_button, step3_button, button_frame, step_number, scanned_data):
     completion_frame = ttk.Frame(previous_frame.master, style="Modern.TFrame", padding="20")
     previous_frame.pack_forget()
     completion_frame.pack(expand=True, fill="both")
@@ -319,13 +312,13 @@ def show_completion_page(previous_frame, step1_button, step2_button, step3_butto
     title_label = ttk.Label(completion_frame, text="Complete Step", style="Title.TLabel")
     title_label.pack(pady=5)
 
-    complete_button = ModernButton(completion_frame, text="Complete", command=lambda: complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
+    complete_button = ModernButton(completion_frame, text="Complete", command=lambda: complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
     complete_button.pack(pady=20)
 
     back_button = ModernButton(completion_frame, text="Back", command=lambda: back_to_form(completion_frame, previous_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=15)
     back_button.pack(pady=10)
 
-def complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number):
+def complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number, scanned_data):
     try:
         print(f"[DEBUG] Step {step_number} completed")
         sio.emit('step_completed', {'step': step_number, 'data': scanned_data})
@@ -391,28 +384,28 @@ def create_overlay():
     button_frame = ttk.Frame(main_frame, style="Modern.TFrame")
     button_frame.pack(expand=True, fill="both")
 
-    step1_button = ModernButton(button_frame, text="Step 1", command=lambda: step_clicked(1, step1_button, step2_button, step3_button, button_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', bd=0, highlightthickness=1, padx=10, pady=5, highlightbackground="#8B5CF6", highlightcolor="#8B5CF6", borderwidth=0, width=10, height=1, compound='left', anchor='center')
+    step1_button = ModernButton(button_frame, text="Step 1", command=lambda: step_clicked(1, step1_button, step2_button, step3_button, button_frame, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', bd=0, highlightthickness=1, padx=10, pady=5, highlightbackground="#8B5CF6", highlightcolor="#8B5CF6", borderwidth=0, width=10, height=1, compound='left', anchor='center')
     step1_button.pack(fill='x', pady=5)
 
-    step2_button = ModernButton(button_frame, text="Step 2", command=lambda: step_clicked(2, step1_button, step2_button, step3_button, button_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', bd=0, highlightthickness=1, padx=10, pady=5, highlightbackground="#8B5CF6", highlightcolor="#8B5CF6", borderwidth=0, width=10, height=1, compound='left', anchor='center')
+    step2_button = ModernButton(button_frame, text="Step 2", command=lambda: step_clicked(2, step1_button, step2_button, step3_button, button_frame, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', bd=0, highlightthickness=1, padx=10, pady=5, highlightbackground="#8B5CF6", highlightcolor="#8B5CF6", borderwidth=0, width=10, height=1, compound='left', anchor='center')
     step2_button.pack(fill='x', pady=5)
     step2_button.config(state="disabled")
 
-    step3_button = ModernButton(button_frame, text="Step 3", command=lambda: step_clicked(3, step1_button, step2_button, step3_button, button_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', bd=0, highlightthickness=1, padx=10, pady=5, highlightbackground="#8B5CF6", highlightcolor="#8B5CF6", borderwidth=0, width=10, height=1, compound='left', anchor='center')
+    step3_button = ModernButton(button_frame, text="Step 3", command=lambda: step_clicked(3, step1_button, step2_button, step3_button, button_frame, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', bd=0, highlightthickness=1, padx=10, pady=5, highlightbackground="#8B5CF6", highlightcolor="#8B5CF6", borderwidth=0, width=10, height=1, compound='left', anchor='center')
     step3_button.pack(fill='x', pady=5)
     step3_button.config(state="disabled")
 
-    def step_clicked(step_number, step1_button, step2_button, step3_button, button_frame):
+    def step_clicked(step_number, step1_button, step2_button, step3_button, button_frame, scanned_data):
         if step_number == 1:
-            step1_frame = create_step1_frame(main_frame, step1_button, step2_button, step3_button, button_frame)
+            step1_frame = create_step1_frame(main_frame, step1_button, step2_button, step3_button, button_frame, scanned_data)
             button_frame.pack_forget()
             step1_frame.pack(expand=True, fill="both")
         elif step_number == 2:
-            step2_frame = create_step2_frame(main_frame, step1_button, step2_button, step3_button, button_frame)
+            step2_frame = create_step2_frame(main_frame, step1_button, step2_button, step3_button, button_frame, scanned_data)
             button_frame.pack_forget()
             step2_frame.pack(expand=True, fill="both")
         elif step_number == 3:
-            step3_frame = create_step3_frame(main_frame, step1_button, step2_button, step3_button, button_frame)
+            step3_frame = create_step3_frame(main_frame, step1_button, step2_button, step3_button, button_frame, scanned_data)
             button_frame.pack_forget()
             step3_frame.pack(expand=True, fill="both")
         else:

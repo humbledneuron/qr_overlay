@@ -215,13 +215,13 @@ def show_signing_page(previous_frame, owner_entry, renter_entry, personal_code_e
     back_button = ModernButton(nav_frame, text="Back", command=lambda: back_to_form(signing_frame, previous_frame), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     back_button.pack(side='left', padx=5)
 
-    next_button = ModernButton(nav_frame, text="Next", command=lambda: validate_and_show_completion(signing_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
+    next_button = ModernButton(nav_frame, text="Next", command=lambda: validate_and_send_data_step2(signing_frame, owner_entry, renter_entry, personal_code_entry, owner_sign_var, renter_sign_var, step1_button, step2_button, step3_button, button_frame, validation_label, scanned_data), font=('Segoe UI', 10, 'bold'), fg='white', bg='#8B5CF6', activeforeground='white', activebackground='#7C3AED', relief='flat', cursor='hand2', width=10)
     next_button.pack(side='right', padx=5)
 
-def validate_and_show_completion(signing_frame, owner_entry, renter_entry, personal_code_entry, 
+def validate_and_send_data_step2(signing_frame, owner_entry, renter_entry, personal_code_entry, 
                                owner_sign_var, renter_sign_var, step1_button, step2_button, 
                                step3_button, button_frame, validation_label, scanned_data):
-    """Validate signatures and show completion page if valid."""
+    """Validate signatures and send data for step 2."""
     
     if not owner_sign_var.get() or not renter_sign_var.get():
         validation_label.config(text="Please select signing status for both owner and renter")
@@ -235,7 +235,12 @@ def validate_and_show_completion(signing_frame, owner_entry, renter_entry, perso
         'renter_sign': renter_sign_var.get()
     })
 
-    show_completion_page(signing_frame, step1_button, step2_button, step3_button, button_frame, 2, scanned_data)
+    try:
+        print(f"[DEBUG] Step 2 data sent with data: {scanned_data}")
+        sio.emit('step_completed', {'step': 2, 'data': scanned_data})
+        show_completion_page(signing_frame, step1_button, step2_button, step3_button, button_frame, 2, scanned_data)
+    except Exception as e:
+        print(f"Error: {str(e)}")
 
 def create_step3_frame(control_panel, step1_button, step2_button, step3_button, button_frame, scanned_data):
     step3_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import cv2
-from pyzbar import pyzbar
+# from pyzbar import pyzbar
 from PIL import ImageGrab, Image, ImageTk
 from threading import Thread
 import time
@@ -26,9 +26,21 @@ class ModernButton(tk.Button):
         self['background'] = '#8B5CF6'
 
 def scan_for_qr_codes(frame):
-    gray = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2GRAY)
-    qr_codes = pyzbar.decode(gray)
-    return qr_codes
+    frame_np = np.array(frame)
+    gray = cv2.cvtColor(frame_np, cv2.COLOR_RGB2GRAY)
+    
+    gray = cv2.equalizeHist(gray)
+    
+    detector = cv2.QRCodeDetector()
+    
+    data, points, _ = detector.detectAndDecode(gray)
+    
+    if data:
+        print(f"QR Code detected: {data}")
+        return [{'data': data, 'points': points}] 
+    else:
+        print("No QR Code detected.")
+        return [] 
 
 def start_scanning(root):
     global stop_scanning, scanned_data
@@ -39,12 +51,13 @@ def start_scanning(root):
             y = root.winfo_y()
             width = root.winfo_width()
             height = root.winfo_height()
-            
+
             screenshot = ImageGrab.grab(bbox=(x, y, x + width, y + height))
+            
             qr_codes = scan_for_qr_codes(screenshot)
             
             for qr_code in qr_codes:
-                data = qr_code.data.decode('utf-8')
+                data = qr_code['data']
                 print(f"QR Code detected: {data}")
                 scanned_data = {'data': data}
                 try:
@@ -53,7 +66,7 @@ def start_scanning(root):
                     print(f"Socket emission error: {e}")
             
             time.sleep(0.1)
-            
+        
         except Exception as e:
             print(f"Scanning error: {e}")
             time.sleep(1)
@@ -434,8 +447,8 @@ def create_overlay():
     root.bind("<Configure>", align_windows)
 
     try:
-        sio.connect('http://localhost:5000')
-        # sio.connect('https://oneflow-qr.onrender.com/')
+        # sio.connect('http://localhost:5000')
+        sio.connect('https://oneflows.onrender.com/')
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")

@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import cv2
-# from pyzbar import pyzbar
 from PIL import ImageGrab, Image, ImageTk
 from threading import Thread
 import time
@@ -36,8 +35,10 @@ def scan_for_qr_codes(frame):
     data, points, _ = detector.detectAndDecode(gray)
     
     if data:
+        print(f"QR Code detected: {data}")
         return [{'data': data, 'points': points}] 
     else:
+        print("No QR Code detected.")
         return [] 
 
 def start_scanning(root):
@@ -56,6 +57,7 @@ def start_scanning(root):
             
             for qr_code in qr_codes:
                 data = qr_code['data']
+                print(f"QR Code detected: {data}")
                 scanned_data = {'data': data}
                 try:
                     sio.emit('qr_code_scanned', scanned_data)
@@ -65,6 +67,7 @@ def start_scanning(root):
             time.sleep(0.1)
         
         except Exception as e:
+            print(f"Scanning error: {e}")
             time.sleep(1)
 
 def create_step1_frame(control_panel, step1_button, step2_button, step3_button, button_frame, scanned_data):
@@ -109,6 +112,7 @@ def send_data_step1(step1_frame, date_entry, address_entry, scanned_data, step1_
     step1_data = {**scanned_data, 'date': date, 'address': address}
     
     try:
+        print(f"[DEBUG] Step 1 data sent with data: {step1_data}")
         sio.emit('step_completed', {'step': 1, 'data': step1_data})
         show_completion_page(step1_frame, step1_button, step2_button, step3_button, button_frame, 1, step1_data)
     except Exception as e:
@@ -173,6 +177,7 @@ def send_data_step2(step2_frame, owner_entry, renter_entry, personal_code_entry,
     }
     
     try:
+        print(f"[DEBUG] Step 2 data sent with data: {step2_data}")
         sio.emit('step_completed', {'step': 2, 'data': step2_data})
         show_signing_page(step2_frame, owner_entry, renter_entry, personal_code_entry, step1_button, step2_button, step3_button, button_frame, scanned_data)
     except Exception as e:
@@ -243,6 +248,7 @@ def validate_and_send_data_step2(signing_frame, owner_entry, renter_entry, perso
     })
 
     try:
+        print(f"[DEBUG] Step 2 data sent with data: {scanned_data}")
         sio.emit('step_completed', {'step': 2, 'data': scanned_data})
         show_completion_page(signing_frame, step1_button, step2_button, step3_button, button_frame, 2, scanned_data)
     except Exception as e:
@@ -309,6 +315,7 @@ def send_data_step3(step3_frame, owner_entry, renter_entry, code_entry, step1_bu
     }
     
     try:
+        print(f"[DEBUG] Step 3 data sent with data: {step3_data}")
         sio.emit('step_completed', {'step': 3, 'data': step3_data})
         show_completion_page(step3_frame, step1_button, step2_button, step3_button, button_frame, 3, step3_data)
     except Exception as e:
@@ -330,6 +337,7 @@ def show_completion_page(previous_frame, step1_button, step2_button, step3_butto
 
 def complete_step(completion_frame, step1_button, step2_button, step3_button, button_frame, step_number, scanned_data):
     try:
+        print(f"[DEBUG] Step {step_number} completed")
         completion_frame.pack_forget()
         
         if step_number == 1:
@@ -347,6 +355,8 @@ def complete_step(completion_frame, step1_button, step2_button, step3_button, bu
         
         button_frame.pack(expand=True, fill="both")
         
+        # Emit an event to the front-end to complete the step
+        print(f"[DEBUG] Step {step_number} emitted")
     except Exception as e:
         print(f"Error: {str(e)}")
 
@@ -422,6 +432,7 @@ def create_overlay():
             step3_frame.pack(expand=True, fill="both")
         else:
             try:
+                print(f"[DEBUG] Step {step_number} completed")
                 sio.emit('step_completed', {'step': step_number, 'data': scanned_data})
                 status_var.set(f"Step {step_number} completed")
             except Exception as e:
@@ -440,6 +451,7 @@ def create_overlay():
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")
+        print(f"Server connection error: {e}")
 
     scan_thread = Thread(target=start_scanning, args=(root,))
     scan_thread.daemon = True

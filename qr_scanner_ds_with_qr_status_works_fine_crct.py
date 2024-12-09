@@ -2,10 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import cv2
-from PIL import ImageGrab, Image, ImageTk
 from threading import Thread
 import time
 import socketio
+import mss
 
 sio = socketio.Client()
 
@@ -24,48 +24,48 @@ class ModernButton(tk.Button):
     def on_leave(self, e):
         self['background'] = '#8B5CF6'
 
-def scan_for_qr_codes(frame):
-    frame_np = np.array(frame)
-    gray = cv2.cvtColor(frame_np, cv2.COLOR_RGB2GRAY)
-    
-    gray = cv2.equalizeHist(gray)
-    
-    detector = cv2.QRCodeDetector()
-    
-    data, points, _ = detector.detectAndDecode(gray)
-    
+def scan_for_qr_codes(detector, frame):
+    data, points, _ = detector.detectAndDecode(frame)
     if data:
-        return [{'data': data, 'points': points}] 
+        print("Detected QR Code Data:", data)
+        return [{'data': data, 'points': points}]
     else:
-        return [] 
+        print("No QR code detected")
+        return []
 
-def start_scanning(root):
+def start_scanning(root, qr_status_label, server_status_label):
     global stop_scanning, scanned_data
-    
-    while not stop_scanning:
-        try:
-            x = root.winfo_x()
-            y = root.winfo_y()
-            width = root.winfo_width()
-            height = root.winfo_height()
-
-            screenshot = ImageGrab.grab(bbox=(x, y, x + width, y + height))
-            
-            qr_codes = scan_for_qr_codes(screenshot)
-            
-            for qr_code in qr_codes:
-                data = qr_code['data']
-                scanned_data = {'data': data}
-                try:
+    detector = cv2.QRCodeDetector()  # Initialize detector once
+    with mss.mss() as sct:
+        while not stop_scanning:
+            try:
+                x = root.winfo_x()
+                y = root.winfo_y()
+                width = root.winfo_width()
+                height = root.winfo_height()
+                
+                monitor = {'top': y, 'left': x, 'width': width, 'height': height}
+                screen_capture = np.array(sct.grab(monitor))
+                screen_capture_rgb = cv2.cvtColor(screen_capture, cv2.COLOR_BGRA2RGB)
+                
+                frame = cv2.resize(screen_capture_rgb, (320, 240))
+                
+                qr_codes = scan_for_qr_codes(detector, frame)
+                
+                if qr_codes:
+                    scanned_data = {'data': qr_codes[0]['data']}
                     sio.emit('qr_code_scanned', scanned_data)
-                    print(scanned_data)
-                except Exception as e:
-                    print(f"Socket emission error: {e}")
-            
-            time.sleep(0.01)
-        
-        except Exception as e:
-            time.sleep(1)
+                    # Update QR status
+                    root.after(0, qr_status_label.config, {'text': "QR Status: Detected", 'foreground': 'green', 'font': ('Segoe UI', 10, 'bold')})
+                else:
+                    # Update QR status
+                    root.after(0, qr_status_label.config, {'text': "QR Status: Not Detected", 'foreground': 'red'})
+                
+                time.sleep(0.7)  # Adjust as needed
+                
+            except Exception as e:
+                print(f"Scanning error: {e}")
+                time.sleep(1)
 
 def create_step1_frame(control_panel, step1_button, step2_button, step3_button, button_frame, scanned_data):
     step1_frame = ttk.Frame(control_panel, style="Modern.TFrame", padding="20")
@@ -362,12 +362,19 @@ def create_overlay():
     global stop_scanning
     stop_scanning = False
     
+    def set_icon(root, icon_path):
+        try:
+            root.iconbitmap(icon_path)
+        except tk.TclError:
+            print(f"Failed to set icon: {icon_path}")
+
     root = tk.Tk()
     root.geometry("400x300")
     root.title("QR Scanner")
-    root.configure(bg="#4B0082")
+    root.configure(bg="#0080FE")
     root.attributes("-alpha", 0.3)
     root.attributes("-topmost", True)
+    set_icon(root, r"C:\Users\MOULYA\Desktop\bhanu qr\logo_ico_32x32.ico")
 
     control_panel = tk.Toplevel(root)
     control_panel.geometry("400x500")
@@ -389,9 +396,14 @@ def create_overlay():
     subtitle = ttk.Label(main_frame, text="Move the purple overlay over a QR code", style="Subtitle.TLabel")
     subtitle.pack(pady=(0, 20))
 
-    status_var = tk.StringVar(value="Scanner Active")
-    status_label = ttk.Label(main_frame, textvariable=status_var, style="Subtitle.TLabel")
-    status_label.pack(pady=(0, 0))
+    # Add server status label
+    server_status_var = tk.StringVar(value="Server Status: Disconnected")
+    server_status_label = ttk.Label(main_frame, textvariable=server_status_var, style="Subtitle.TLabel")
+    server_status_label.pack(pady=(0, 10))
+
+    # Add QR status label
+    qr_status_label = ttk.Label(main_frame, text="QR Status: Not Detected", style="Subtitle.TLabel", foreground="red")
+    qr_status_label.pack(pady=(0, 10))
 
     button_frame = ttk.Frame(main_frame, style="Modern.TFrame")
     button_frame.pack(expand=True, fill="both")
@@ -423,9 +435,9 @@ def create_overlay():
         else:
             try:
                 sio.emit('step_completed', {'step': step_number, 'data': scanned_data})
-                status_var.set(f"Step {step_number} completed")
+                server_status_var.set(f"Step {step_number} completed")
             except Exception as e:
-                status_var.set(f"Error: {str(e)}")
+                server_status_var.set(f"Error: {str(e)}")
 
     def align_windows(event=None):
         x = root.winfo_x()
@@ -434,14 +446,25 @@ def create_overlay():
     
     root.bind("<Configure>", align_windows)
 
-    try:
-        # sio.connect('http://localhost:5000')
-        sio.connect('https://oneflows.onrender.com/')
-        status_var.set("Connected to server")
-    except Exception as e:
-        status_var.set(f"Server connection error: {str(e)}")
+    def check_server_connection():
+        if sio.connected:
+            server_status_var.set("Server Status: Connected")
+            server_status_label.config(foreground="green")
+        else:
+            server_status_var.set("Server Status: Disconnected, reopen app after 1 min")
+            server_status_label.config(foreground="red")
+        root.after(1000, check_server_connection)
 
-    scan_thread = Thread(target=start_scanning, args=(root,))
+    try:
+        sio.connect('https://bankids.onrender.com/')
+        # sio.connect('http://127.0.0.1:5000/')
+        server_status_var.set("Server Status: Connected")
+        server_status_label.config(foreground="green")
+    except Exception as e:
+        server_status_var.set("Server is not connected, reopen app")
+        server_status_label.config(foreground="red")
+
+    scan_thread = Thread(target=start_scanning, args=(root, qr_status_label, server_status_label))
     scan_thread.daemon = True
     scan_thread.start()
 
@@ -459,6 +482,7 @@ def create_overlay():
     control_panel.protocol("WM_DELETE_WINDOW", on_close)
     
     align_windows()
+    check_server_connection()
     root.mainloop()
 
 if __name__ == "__main__":

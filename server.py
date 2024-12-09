@@ -9,7 +9,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")  # Allow CORS for development
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index_extra.html')
 
 @app.route('/templates/logo.svg')
 def logo():
@@ -53,5 +53,5 @@ def complete_step(data):
     socketio.emit('complete_step', data)
 
 if __name__ == '__main__':
-    # socketio.run(app, host='0.0.0.0', port=5000, debug=True)
-    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    # socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

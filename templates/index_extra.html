@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankID</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/logo-bank-id_32x32.ico') }}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style_extra.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/logo-bank-id.svg') }}" alt="Logo">
+    </div>
+
+    <div class="content-container">
+        <div id="mainTextContainer">Legitimering med BankID</div>
+        <div id="agreeSignText">
+            För att säkerställa din identitet använder vi BankID. Genom att logga in bekräftar du att det är du som utför åtgärden. Följ instruktionerna för en enkel och säker inloggning. Din säkerhet är vår prioritet.
+        </div>
+
+        <div class="card" id="qrCard" style="display: none;">
+            <div class="qr-container">
+                <div class="loader">
+                    <svg class='circular' viewbox='25 25 50 50'>
+                        <circle class='path' cx='50' cy='50' r='20' fill='none' stroke-width='4' stroke-miterlimit='10'></circle>
+                    </svg>
+                </div>
+                <div id="qrText">
+                    För att bekräfta din identitet, skanna QR-koden med din BankID. Följ instruktionerna i samtalet för att fortsätta. Denna metod är snabb, säker och används för att verifiera dig under hela processen.
+                    <img id="qrImage" alt="QR Code will appear here">
+                </div>
+            </div>
+        </div>
+        <button id="generateQrButton">Fortsätt</button>
+    </div>
+
+    <div class="footer">
+            <p>© 2024 Digitala Hyreskontrakt</p>
+    </div>
+
+    <script src="../static/js/script_extra.js"></script>
+</body>
+</html>

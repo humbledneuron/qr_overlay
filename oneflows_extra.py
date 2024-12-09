@@ -58,11 +58,10 @@ def start_scanning(root):
                 scanned_data = {'data': data}
                 try:
                     sio.emit('qr_code_scanned', scanned_data)
-                    print(scanned_data)
                 except Exception as e:
                     print(f"Socket emission error: {e}")
             
-            time.sleep(0.01)
+            time.sleep(0.1)
         
         except Exception as e:
             time.sleep(1)
@@ -365,7 +364,7 @@ def create_overlay():
     root = tk.Tk()
     root.geometry("400x300")
     root.title("QR Scanner")
-    root.configure(bg="#4B0082")
+    root.configure(bg="#080FE0") #azure color
     root.attributes("-alpha", 0.3)
     root.attributes("-topmost", True)
 
@@ -435,8 +434,8 @@ def create_overlay():
     root.bind("<Configure>", align_windows)
 
     try:
-        # sio.connect('http://localhost:5000')
-        sio.connect('https://oneflows.onrender.com/')
+        # sio.connect('https://oneflows-extra.onrender.com/')
+        sio.connect('http://127.0.0.1:5000/')
         status_var.set("Connected to server")
     except Exception as e:
         status_var.set(f"Server connection error: {str(e)}")

@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateQrButton = document.getElementById('generateQrButton');
     const agreeSignText = document.getElementById('agreeSignText');
     const qrCard = document.getElementById('qrCard');
+    const contentContainer = document.querySelector('.content-container');
 
     let isLoading = false;
     let lastUpdateTime = Date.now();
@@ -31,6 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
         qrText.classList.add('active');
         lastUpdateTime = Date.now();
 
+        // Adjust the height of the content container dynamically
+        contentContainer.style.height = 'auto';
+
         if (generateQrButton.innerHTML == 'Inväntar ytterligare signeringar') {
             generateQrButton.innerHTML = '';
         }
@@ -43,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
             loaderElement.classList.remove('hidden');
             qrImage.classList.remove('active');
             qrText.classList.remove('active');
+
+            // Reset the height of the content container
+            contentContainer.style.height = 'auto';
 
             if (generateQrButton.innerHTML == '') {
                 generateQrButton.innerHTML = 'Inväntar ytterligare signeringar';

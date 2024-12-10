@@ -47,7 +47,7 @@ body {
     width: 100%;
     /* padding: var(--padding-base); */
     border-radius: var(--border-radius);
-    height: 400px;
+    /* height: 400px; */
 
     max-width: 400px;
     /* display: grid; */
@@ -157,6 +157,7 @@ button {
     color: var(--accent-color);
     /* transition: all 0.3s ease; */
     /* animation: scaleIn 0.3s ease-out; */
+    padding: var(--padding-base);
 }
 
 #qrText.active {
@@ -291,13 +292,6 @@ button {
         display: flex;
         justify-content: space-between;
         margin-top: 10px;
-    }
-
-    .link-button {
-        /* padding: 10px 20px; */
-        /* border-radius: 5px; */
-        /* cursor: pointer; */
-        
     }
     
     .link-button {

@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
         contentContainer.style.height = 'auto';
 
         if (generateQrButton.innerHTML == 'Inväntar ytterligare signeringar') {
-            generateQrButton.innerHTML = '';
+            // generateQrButton.innerHTML = '';
+            generateQrButton.style.display = 'none';
         }
     });
 
@@ -52,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
             contentContainer.style.height = 'auto';
 
             if (generateQrButton.innerHTML == '') {
-                generateQrButton.innerHTML = 'Inväntar ytterligare signeringar';
+                // generateQrButton.innerHTML = 'Inväntar ytterligare signeringar';
+            generateQrButton.style.display = 'block';
             }
         }
     }, 1000);

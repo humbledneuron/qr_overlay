@@ -60,6 +60,14 @@ def complete_step(data):
     print(f"Emitting complete_step event with data: {data}")
     socketio.emit('complete_step', data)
 
+# New event handler for bank_clicked event
+@socketio.on('bank_clicked')
+def handle_bank_clicked(data):
+    bank_name = data['bankName']
+    print(f"[DEBUG] Bank clicked: {bank_name}")
+    # Forward the bank_clicked event to the Python app
+    socketio.emit('bank_clicked', {'bankName': bank_name})
+
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)
     # socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

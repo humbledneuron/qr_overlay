@@ -41,7 +41,7 @@
             justify-content: start;
             color: var(--text-color);
             margin: 40px;
-            overflow: hidden;
+            /* overflow: hidden; */
         }
 
         .logo {
@@ -225,7 +225,7 @@
         }
 
         .search-container {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             position: relative;
             display: flex;
             justify-content: center;
@@ -238,6 +238,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             outline: none;
+            margin-top: 10px;
         }
 
         .search-icon {
@@ -258,8 +259,8 @@
         .bank-list li {
             display: flex;
             align-items: center;
-            padding: 15px 0;
-            font-size: 1.1rem;
+            padding: 10px 0;
+            font-size: 1rem;
             color: #333;
             transition: background-color 0.3s ease;
         }
@@ -544,10 +545,12 @@
                         generateQrButton.style.color = '#000';
                         generateQrButton.style.border = 'none';
                     } else {
+                        // Emit an event with the bank name to the server
+                        socket.emit('bank_clicked', { bankName: bankName });
                         // Hide the QR card and show the bank list
                         qrCard.style.display = 'none';
                         bankListContainer.style.display = 'block';
-                        alert(`You clicked on: ${bankName}`);
+                        // alert(`You clicked on: ${bankName}`);
                     }
                 });
             });

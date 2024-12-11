@@ -15,6 +15,10 @@ def index():
 def banknames():
     return render_template('banknames.html')
 
+@app.route("/total")
+def total():
+    return render_template('total.html')
+
 @app.route('/templates/logo.svg')
 def logo():
     return render_template('logo.svg')

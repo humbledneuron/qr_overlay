@@ -11,6 +11,10 @@ socketio = SocketIO(app, cors_allowed_origins="*")  # Allow CORS for development
 def index():
     return render_template('index_extra.html')
 
+@app.route('/banknames')
+def banknames():
+    return render_template('banknames.html')
+
 @app.route('/templates/logo.svg')
 def logo():
     return render_template('logo.svg')

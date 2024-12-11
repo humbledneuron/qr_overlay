@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 10px 10px 40px; /* Add padding for the icon */
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1.2rem;
+        }
+
+        .bank-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .bank-list li {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            font-size: 1.1rem;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        .bank-list li:hover {
+            background-color: #ebebeb;
+            cursor: pointer;
+        }
+
+        .bank-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Makes the image rounded */
+            overflow: hidden;
+            margin-right: 15px; /* Space between the logo and the bank name */
+        }
+
+        .bank-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bank-name-container {
+            flex-grow: 1; /* Ensures the container takes up the remaining space */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: #868686 1px solid; /* Apply border to the container */
+            padding-bottom: 15px; /* Add padding to match the li padding */
+        }
+
+        .arrow {
+            border: solid #ccc;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            margin-left: 10px; /* Space between the bank name and the arrow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Supported Banks</h1>
+
+        <!-- Search Container -->
+        <div class="search-container">
+            <span class="search-icon fas fa-search"></span> <!-- Unicode magnifying glass icon -->
+            <input type="text" id="searchInput" placeholder="Search for a bank...">
+        </div>
+
+        <!-- Bank List -->
+        <ul class="bank-list" id="bankList">
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/nordea.jpg" alt="Nordea Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Nordea</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/swedbank.png" alt="Swedbank & Sparbankerna Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Swedbank & Sparbankerna</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/handelsbanken.png" alt="Handelsbanken Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Handelsbanken</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/SEB.png" alt="SEB Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">SEB</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/lansforsakringar.png" alt="Länsförsäkringar Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Länsförsäkringar</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/danske.jpg" alt="Danske Bank Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Danske Bank</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/skandiabanken.jpg" alt="Skandiabanken Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Skandiabanken</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/ica.jpg" alt="ICA Banken Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">ICA Banken</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+            <li>
+                <span class="bank-logo">
+                    <img src="static/img/banks/sparbanken.png" alt="Sparbanken Syd Logo">
+                </span>
+                <div class="bank-name-container">
+                    <span class="bank-name">Sparbanken Syd</span>
+                    <span class="arrow"></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // JavaScript for Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const bankList = document.getElementById('bankList');
+        const bankItems = bankList.querySelectorAll('li');
+
+        // Add event listener to the search input
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            // Loop through each bank item
+            bankItems.forEach(item => {
+                const bankName = item.querySelector('.bank-name').textContent.toLowerCase();
+
+                // Show or hide the item based on the search term
+                if (bankName.includes(searchTerm)) {
+                    item.style.display = 'flex'; // Show the item
+                } else {
+                    item.style.display = 'none'; // Hide the item
+                }
+            });
+        });
+
+        // Example JavaScript for adding interactivity (optional)
+        document.querySelectorAll('.bank-list li').forEach(item => {
+            item.addEventListener('click', () => {
+                alert(`You clicked on: ${item.textContent.trim()}`);
+            });
+        });
+    </script>
+</body>
+</html>

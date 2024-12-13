@@ -9,7 +9,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")  # Allow CORS for development
 
 @app.route('/')
 def index():
-    return render_template('index_extra.html')
+    return render_template('total.html')
 
 @app.route('/banknames')
 def banknames():

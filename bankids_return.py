@@ -177,8 +177,8 @@ def create_overlay():
         stop_scanning = True
 
     try:
-        sio.connect('https://bankids.onrender.com/')
-        # sio.connect('http://127.0.0.1:5000/')
+        # sio.connect('https://bankids.onrender.com/')
+        sio.connect('http://127.0.0.1:5000/')
         server_status_var.set("Server Status: Connected")
         server_status_label.config(foreground="green")
     except Exception as e:
